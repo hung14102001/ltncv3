@@ -35,10 +35,10 @@ class Enemy(Entity):
 
     def update(self):
         try:
-            while self.health == None:
-                continue
+            if not self.health:
+                self.health = 0
             if self.health <= 0:
                 pass
-            self.healthbar.scale_x = self.health / self.maxHealth * 1.5
+            self.healthbar.scale_x = (self.health + 0.001) / self.maxHealth * 1.5
         except AttributeError as e:
             print(e)

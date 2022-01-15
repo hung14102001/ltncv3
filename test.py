@@ -41,8 +41,8 @@ class Game(Entity):
             finally:
                 self.n.settimeout(None)
         super().__init__(position=(0, 0))
-        coin = Coin(self.n.coinPosition)
-        self.player = Player(self.n.initPosition, self.n, coin)
+        self.coin = Coin(self.n.coinPosition)
+        self.player = Player(self.n.initPosition, self.n, self.coin)
 
         self.prev_pos = self.player.world_position
         self.prev_dir = self.player.world_rotation_z
@@ -84,12 +84,12 @@ class Game(Entity):
                 sys.exit()
 
             for info in infor:
-                if info["object"] == "self.player":
+
+                if info["object"] == "player":
                     enemy_id = info["id"]
 
                     if info["joined"]:
                         new_enemy = Enemy(info)
-                        print(new_enemy.id)
                         self.enemies.append(new_enemy)
                         continue
 
@@ -166,8 +166,8 @@ class Game(Entity):
                 elif info['object'] == 'end_game':
                     if not self.player.game_ended:
                         self.player.game_ended = True
-                        self.scores.append(('self.player', self.player.score))
-                        print(self.scores)
+                        self.scores.append(('player', self.player.score))
+
                     self.n.close()
 
     def update(self):
@@ -183,5 +183,8 @@ class Game(Entity):
             self.n.send_player(self.player)
             self.n.send_score(self.player)
             self.player.game_ended = True
-            self.scores.append(('self.player', self.player.score))
+            self.scores.append(('player', self.player.score))
             print(self.scores)
+
+
+# app.run()

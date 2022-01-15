@@ -1,4 +1,6 @@
+import imp
 import os
+from telnetlib import GA
 from ursina import *
 from re import A, escape
 from random import randint
@@ -28,9 +30,9 @@ class MainMenu(Entity):
         self.choose_menu = Entity(parent=self, enabled=False)
         self.options_menu = Entity(parent=self,enabled=False)
 
-        self.player = Player(-15, -15)
-        self.background = Sea()
-        self.minimap = MiniMap(self.player, self.background)
+        self.player = None
+        self.background = None
+        self.minimap = None
 
         self.loading_screen = LoadingWheel(enabled=False)     
         self.a = Audio('start_game',pitch=1,loop=False,autoPlay=True)
@@ -59,12 +61,13 @@ class MainMenu(Entity):
         def choose1():
             hide(self.choose_menu)
             show(self.loading_screen)
-            self.player.texture= os.path.join("Ships", list[0])
+            # self.player.texture= os.path.join("Ships", list[0])
             isSounding('mouse_click')
             t = time.time()
         
             try:
-                thread.start_new_thread(function=loadTextures, args='')
+                loadTextures()
+                # thread.start_new_thread(function=loadTextures, args='')
             except Exception as e:
                 print('error starting thread', e)
 
@@ -73,7 +76,7 @@ class MainMenu(Entity):
         def choose2():
             hide(self.choose_menu)
             show(self.loading_screen)
-            self.player.texture= os.path.join("Ships", list[1])
+            # self.player.texture= os.path.join("Ships", list[1])
             isSounding('mouse_click')
             t = time.time()
             
@@ -87,7 +90,7 @@ class MainMenu(Entity):
         def choose3():
             hide(self.choose_menu)
             show(self.loading_screen)
-            self.player.texture= os.path.join("Ships", list[2])
+            # self.player.texture= os.path.join("Ships", list[2])
             isSounding('mouse_click')
 
             t = time.time()
@@ -102,7 +105,7 @@ class MainMenu(Entity):
         def choose4():
             hide(self.choose_menu)
             show(self.loading_screen)
-            self.player.texture= os.path.join("Ships", list[3])
+            # self.player.texture= os.path.join("Ships", list[3])
             isSounding('mouse_click')
             t = time.time()
         
@@ -116,7 +119,7 @@ class MainMenu(Entity):
         def choose5():
             hide(self.choose_menu)
             show(self.loading_screen)
-            self.player.texture= os.path.join("Ships", list[4])
+            # self.player.texture= os.path.join("Ships", list[4])
             isSounding('mouse_click')
             
             t = time.time()
@@ -140,15 +143,19 @@ class MainMenu(Entity):
             bar = HealthBar(max_value=len(textures_to_load), value=0, position=(-.5,-.35,-2), scale_x=1, animation_duration=0, world_parent=self.loading_screen, bar_color='#f5af42')
             for i, t in enumerate(textures_to_load):
                 load_texture(t)
-                print(i)
                 bar.value = i+1
+            if bar.value == 100:
+                from test import Game
+                Game()
 
             print('loaded textures')
             hide(self.loading_screen)
-            show(self.player,self.background,self.minimap)
-            show(self.player.healthbar_bg,self.player.healthbar)
-            Scene()
-            self.player.text.visible=True
+            # show(self.player,self.background,self.minimap)
+            # show(self.player.healthbar_bg,self.player.healthbar)
+            # import servertest
+
+            # Scene()
+            # self.player.text.visible=True
 
          # Reference of our action function for play button
         def play_btn():
@@ -214,13 +221,3 @@ class MainMenu(Entity):
         for key, value in kwargs.items():
             setattr(self, key, value)
             
-    def input(self,key):
-        # move left if hold arrow left
-        if mouse.left:
-            if time.time() - self.player.reload > 1:
-                self.player.reload = time.time()
-                self.canno = CannonBall(self.player, self.player.x, self.player.y, mouse.x, mouse.y)
-                if self.player.enabled:
-                    self.canno.enabled = True
-                else:
-                    self.canno.enabled = False

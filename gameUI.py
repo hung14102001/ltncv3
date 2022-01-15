@@ -6,7 +6,8 @@ class GameUI (Entity):
     def __init__(self, player):
         super().__init__()
         self.player = player
-        self.minimap = MiniMap(self.player)
+        self.minimap = MiniMap()
+        
         self.healthBar = HealthBar()
         self.text = Text(
             text="Score: 0 ", 
@@ -15,10 +16,13 @@ class GameUI (Entity):
             position=(-0.8,0.5,0)
         )
     def update(self):
-        self.minimap.playerRep.x = self.player.x/40
-        self.minimap.playerRep.y = self.player.y/40
-        self.healthBar.healthbar.scale_x = self.healthBar.healthbar_size.x*self.player.health/100
-        self.text.text = "Score: " + str(self.player.score)
+        if self.minimap:
+            self.minimap.playerRep.x = self.player.x/40
+            self.minimap.playerRep.y = self.player.y/40
+
+        if self.healthBar:
+            self.healthBar.healthbar.scale_x = self.healthBar.healthbar_size.x*self.player.health/100
+            self.text.text = "Score: " + str(self.player.score)
 
 class HealthBar():
     def __init__(self):
@@ -40,7 +44,7 @@ class HealthBar():
         )
 
 class MiniMap(Entity):
-    def __init__(self, player):
+    def __init__(self):
         super().__init__(
             scale=0.28,
             parent=camera.ui,
@@ -59,7 +63,7 @@ class MiniMap(Entity):
             parent=self,
             scale=.05,
             model='circle',
-            position=(player.x/40,player.y/40),
+            position=(0, 0),
             color=red
         )
         self.beach = Entity(
