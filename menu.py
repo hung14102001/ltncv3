@@ -31,6 +31,7 @@ class MainMenu(Entity):
         self.player = Player(-15, -15)
         self.background = Sea()
         self.minimap = MiniMap(self.player, self.background)
+
         self.loading_screen = LoadingWheel(enabled=False)     
         self.a = Audio('start_game',pitch=1,loop=False,autoPlay=True)
 
@@ -149,7 +150,6 @@ class MainMenu(Entity):
             Scene()
             self.player.text.visible=True
 
-
          # Reference of our action function for play button
         def play_btn():
             isSounding('mouse_click')
@@ -185,7 +185,6 @@ class MainMenu(Entity):
         def play_back_btn_action():
             isSounding('mouse_click')
             hide(self.choose_menu)
-            hide(self.chac1, self.chac2, self.chac3,self.chac4, self.chac5)
             show(self.bg,self.main_menu)
 
         Entity(parent=self.choose_menu,model='quad',texture='back_btn.jpg',position=(-0.76,0.44),scale=(0.5,0.3))
@@ -225,4 +224,3 @@ class MainMenu(Entity):
                     self.canno.enabled = True
                 else:
                     self.canno.enabled = False
-        
