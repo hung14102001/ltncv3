@@ -1,3 +1,16 @@
-a = [0,1,2,3,4,5,6,7]
-for i in range(0,8):
-    print(a[(i+1)//2])
+from ursina import Animation, destroy
+import time
+
+def createAnimation(x, y, path, time=1):
+
+    anim = Animation(
+        path,
+        x=x,
+        y=y,
+        fps=4,
+        loop=True,
+        autoplay=True,
+        visible=True,
+        z=-1,
+    )
+    destroy(anim, delay=2)

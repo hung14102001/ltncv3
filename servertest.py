@@ -1,3 +1,4 @@
+from gameUI import GameUI
 from network import Network
 import socket
 import threading
@@ -175,7 +176,7 @@ def update():
         print(scores)
 
 coin = Coin(n.coinPosition)
-player = Player(Vec2(*(n.initPosition)), n, coin)
+player = Player(n.initPosition, n, coin)
 
 prev_pos = player.world_position
 prev_dir = player.world_rotation_z
@@ -183,7 +184,7 @@ prev_dir = player.world_rotation_z
 background = Sea(n.restrictor)
 
 plant = Plant()
-minimap = MiniMap(player, background)
+gameUI = GameUI(player)
 
 msg_thread = threading.Thread(target=protocol, daemon=True)
 msg_thread.start()
