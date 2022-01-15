@@ -1,6 +1,8 @@
 import os, math
 from enemy import Enemy
 from ursina import Entity, collider, destroy
+from sea import CoinPart
+from helper import createAnimation
 class CannonBall(Entity):
     def __init__(self, player, position, rediffX, rediffY, damage, network, enemy=None):
 
@@ -42,5 +44,8 @@ class CannonBall(Entity):
                 if isinstance(hitinfo.entity, Enemy):
                     hitinfo.entity.health -= self.damage
                     self.network.send_health(hitinfo.entity)
+                elif isinstance(hitinfo.entity, CoinPart):
+                    destroy(hitinfo.entity)
+                createAnimation(self.x, self.y, 'kenney_piratePack/PNG/Default size/Effects/explosion')
 
             destroy(self)
