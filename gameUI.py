@@ -26,19 +26,19 @@ class GameUI (Entity):
 
 class HealthBar():
     def __init__(self):
-        self.healthbar_pos = Vec2(0, -0.1)
-        self.healthbar_size = Vec2(0.2, 0.02)
+        self.healthbar_pos = Vec2(0, -.45)
+        self.healthbar_size = Vec2(1, 0.05)
         self.healthbar_bg = Entity(
             parent=camera.ui,
             model="quad",
-            color= color.rgb(255, 0, 0),
+            color= color.rgb(255, 245, 245),
             position=self.healthbar_pos,
             scale=self.healthbar_size
         )
         self.healthbar = Entity(
             parent=camera.ui,
             model="quad",
-            color=color.rgb(0, 255, 0),
+            color=color.rgb(255, 54, 54),
             position=self.healthbar_pos,
             scale=self.healthbar_size
         )

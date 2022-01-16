@@ -25,11 +25,9 @@ matches = {}
 def generate_id(_list: dict, _max: int):
     """
     Generate a unique identifier
-
     Args:
         _list (dict): dictionary of existing players/matches
         _max (int): maximum number of players/matches allowed
-
     Returns:
         str: the unique identifier
     """
@@ -38,29 +36,6 @@ def generate_id(_list: dict, _max: int):
         unique_id = str(random.randint(1, _max))
         if unique_id not in _list:
             return unique_id
-
-def handle_check(match_id: str):
-    if match_id in matches and not matches[match_id]['ended']:
-        players = matches[match_id]['players']
-        if len(players) < 1: return
-
-        if time.time() < matches[match_id]['restrictor'] + 4*20:
-            alives = False
-            for p in players:
-                if players[p]['health'] > 0:
-                    alives = True
-                    
-            if not alives: matches[match_id]['ended'] = True
-
-        else:
-            matches[match_id]['ended'] = True
-
-        if matches[match_id]['ended']:
-            print('............')
-            for p in players:
-                player_conn = players[p]['socket']
-                player_conn.send(json.dumps({'object': 'end_game'}).encode('utf8'))
-                player_conn.close()                
 
 def handle_messages(match_id: str, player_id: int):
     players = matches[match_id]['players']
@@ -84,6 +59,10 @@ def handle_messages(match_id: str, player_id: int):
         except Exception as e:
             print(e)
             continue
+
+        if time.time() > matches[match_id]['restrictor'] + 4*20:
+            print('end de')
+            matches[match_id]['ended'] = True
 
         if msg_json["object"] == "player":
             players[player_id]["position"] = msg_json["position"]
@@ -182,18 +161,11 @@ def main():
         assigned = False
         new_match_id = -1
 
-        death_matches = []
         for m in matches:
             if len(matches[m]['players']) < MAX_PLAYERS:
                 new_match_id = m
                 new_player_id = generate_id(matches[m]['players'], MAX_PLAYERS)
-                if not matches[m]['ended']:
-                    assigned = True
-                else:
-                    death_matches.append(m)
-
-        for d in death_matches:
-            del matches[d]
+                assigned = True
 
         if not assigned:
             new_match_id = generate_id(matches, MAX_MATCHES)
@@ -292,9 +264,6 @@ def main():
         # Start thread to receive messages from client
         msg_thread = threading.Thread(target=handle_messages, args=(new_match_id, new_player_id,), daemon=True)
         msg_thread.start()
-
-        check_thread = threading.Thread(target=handle_check, args=(new_match_id,), daemon=True)
-        check_thread.start()
 
         print(f"New connection from {addr}, assigned ID: {new_match_id, new_player_id}...")
 

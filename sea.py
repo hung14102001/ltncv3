@@ -109,12 +109,26 @@ class Plant:
                 part = PlantPart(ursina.Vec3(px+i, py, 0), self.tiles[87+i])
 
 class Restrictor(ursina.Entity):
+    __instance = None
+
+    @staticmethod 
+    def getInstance():
+        """ Static access method. """
+        # if Restrictor.__instance == None:
+        #     Restrictor()
+        return Restrictor.__instance
+
     def __init__(self, init_time):
+        if Restrictor.__instance == None:
+            self.init_time = init_time
+            Restrictor.__instance = self
+
         super().__init__(
             model=ursina.Circle(resolution=50, mode='line'),
             scale=(40*2**.5,40*2**.5),
             color=ursina.color.rgb(0,0,0),
         )
+        self.burn_time = time.time()
         period = time.time() - init_time
         period_times = period//20
         current_time = period - period_times*20
@@ -130,12 +144,11 @@ class Restrictor(ursina.Entity):
 
     def update(self):
         if self.restricting:
+            if self.scale_x <= 0: return
+
             self.scale -= ursina.time.dt
 
-            if self.scale_x <= 0:
-                ursina.destroy(self)
-
-            elif time.time() > self.countDown:
+            if time.time() > self.countDown:
                 self.countDown += 5
                 self.restricting = False
 
@@ -188,4 +201,4 @@ class Sea:
 
         # đá 
         # island = IslandPart(ursina.Vec3(0,0,0), self.tiles[0])
-        Restrictor(init_time)
+        self.restrictor = Restrictor(init_time)
