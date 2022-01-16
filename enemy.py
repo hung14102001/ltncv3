@@ -2,8 +2,8 @@ from ursina import Entity, Vec3, Vec2, color, collider, destroy
 
 class Enemy(Entity):
     def __init__(self, info):
-        if info['ship'] == 1:
-            img_path = './Ships/ship_1.png'
+        ship = info['ship']
+        img_path = f'./Ships/ship_{ship}.png'
         super().__init__(
             position=Vec2(*info['position']),
             model="quad",
@@ -34,9 +34,10 @@ class Enemy(Entity):
         self.id = info['id']
 
     def update(self):
+        if not hasattr(self, 'health'): return
         try:
-            if not self.health:
-                self.health = 0
+            # if not self.health:
+            #     self.health = 0
             if self.health <= 0:
                 pass
             self.healthbar.scale_x = (self.health + 0.001) / self.maxHealth * 1.5

@@ -1,6 +1,6 @@
 import os, math
 from enemy import Enemy
-from ursina import Entity, collider, destroy
+from ursina import Entity, destroy
 from sea import CoinPart
 from helper import createAnimation
 class CannonBall(Entity):
@@ -15,6 +15,15 @@ class CannonBall(Entity):
             scale_y=0.18,
             collider = 'sphere'
         )
+
+        self.rediffX = rediffX
+        self.rediffY = rediffY
+
+        try:
+            self.rad = math.atan(rediffY/rediffX)
+        except ZeroDivisionError:
+            self.rad = math.atan(rediffY/0.0001)
+
         self.player = player
         self.enemy = enemy
         self.network = network
@@ -22,12 +31,10 @@ class CannonBall(Entity):
 
         self.speed = 0.3
 
-        self.rediffX = rediffX
-        self.rediffY = rediffY
-        self.rad = math.atan(rediffY/rediffX)
         destroy(self,delay=10)
         
     def update(self):
+        if not hasattr(self, 'rediffX'): return
         if self.rediffX < 0:
             self.x -= math.cos(self.rad)*self.speed
             self.y -= math.sin(self.rad)*self.speed
