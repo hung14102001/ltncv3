@@ -7,8 +7,6 @@ from random import randint
 from player import Player
 from cannonball import CannonBall
 from sea import Sea
-from minimap import MiniMap
-from scene import Scene
 from chacracter import Chacracter
 from loading import LoadingWheel
 from direct.stdpy import thread
@@ -16,6 +14,7 @@ from ursina.prefabs.health_bar import HealthBar
 from options import AudioSwitch
 from ursina import printvar
 from endgame import GameOver, Completed
+from game import Game
         
 class MainMenu(Entity):
     def __init__(self, **kwargs):
@@ -34,7 +33,7 @@ class MainMenu(Entity):
         self.background = None
         self.minimap = None
 
-        self.loading_screen = LoadingWheel(enabled=False)     
+        # self.loading_screen = LoadingWheel(enabled=False)     
         self.a = Audio('start_game',pitch=1,loop=False,autoPlay=True)
 
         def isSounding(sound):
@@ -60,84 +59,91 @@ class MainMenu(Entity):
                 
         def choose1():
             hide(self.choose_menu)
-            show(self.loading_screen)
+            Game(1)
+
+            # show(self.loading_screen)
             # self.player.texture= os.path.join("Ships", list[0])
             isSounding('mouse_click')
-            t = time.time()
+            # t = time.time()
         
-            try:
-                loadTextures()
-                # thread.start_new_thread(function=loadTextures, args='')
-            except Exception as e:
-                print('error starting thread', e)
+            # try:
+            #     loadTextures()
+            #     # thread.start_new_thread(function=loadTextures, args='')
+            # except Exception as e:
+            #     print('error starting thread', e)
 
-            print('---', time.time()-t)
+            # print('---', time.time()-t)
 
         def choose2():
             hide(self.choose_menu)
-            show(self.loading_screen)
+            Game(2)
+
+            # show(self.loading_screen)
             # self.player.texture= os.path.join("Ships", list[1])
             isSounding('mouse_click')
-            t = time.time()
+            # t = time.time()
             
-            try:
-                thread.start_new_thread(function=loadTextures, args='')
-            except Exception as e:
-                print('error starting thread', e)
+            # try:
+            #     thread.start_new_thread(function=loadTextures, args='')
+            # except Exception as e:
+            #     print('error starting thread', e)
 
-            print('---', time.time()-t)
+            # print('---', time.time()-t)
 
         def choose3():
             hide(self.choose_menu)
-            show(self.loading_screen)
+            Game(3)
+
+            # show(self.loading_screen)
             # self.player.texture= os.path.join("Ships", list[2])
             isSounding('mouse_click')
 
-            t = time.time()
+            # t = time.time()
         
-            try:
-                thread.start_new_thread(function=loadTextures, args='')
-            except Exception as e:
-                print('error starting thread', e)
+            # try:
+            #     thread.start_new_thread(function=loadTextures, args='')
+            # except Exception as e:
+            #     print('error starting thread', e)
 
-            print('---', time.time()-t)
+            # print('---', time.time()-t)
 
         def choose4():
             hide(self.choose_menu)
-            show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", list[3])
+            # show(self.loading_screen)
+            Game(4)
             isSounding('mouse_click')
+            '''
             t = time.time()
-        
             try:
                 thread.start_new_thread(function=loadTextures, args='')
             except Exception as e:
                 print('error starting thread', e)
 
             print('---', time.time()-t)
+            '''
 
         def choose5():
+            Game(5)
+
             hide(self.choose_menu)
-            show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", list[4])
             isSounding('mouse_click')
             
-            t = time.time()
+            # t = time.time()
         
-            try:
-                thread.start_new_thread(function=loadTextures, args='')
-            except Exception as e:
-                print('error starting thread', e)
+            # try:
+            #     thread.start_new_thread(function=loadTextures, args='')
+            # except Exception as e:
+            #     print('error starting thread', e)
 
-            print('---', time.time()-t)
+            # print('---', time.time()-t)
         list = ["ship_2.png","ship_3.png","ship_4.png","ship_5.png","ship_6.png"]
 
         self.chac1=Chacracter('Chacracter 1',self.choose_menu,-0.4,0.1,list[0],choose1)
         self.chac2=Chacracter('Chacracter 2',self.choose_menu,0,0.1,list[1],choose2)
         self.chac3=Chacracter('Chacracter 3',self.choose_menu,0.4,0.1,list[2],choose3)
-        self.chac4=Chacracter('Chacracter 4',self.choose_menu,-0.2,-0.2,list[3],choose1)
-        self.chac5=Chacracter('Chacracter 5',self.choose_menu,0.2,-0.2,list[4],choose1)
-
+        self.chac4=Chacracter('Chacracter 4',self.choose_menu,-0.2,-0.2,list[3],choose4)
+        self.chac5=Chacracter('Chacracter 5',self.choose_menu,0.2,-0.2,list[4],choose5)
+        '''
         def loadTextures():
             textures_to_load = ['brick', 'shore', 'grass', 'heightmap'] * 25
             bar = HealthBar(max_value=len(textures_to_load), value=0, position=(-.5,-.35,-2), scale_x=1, animation_duration=0, world_parent=self.loading_screen, bar_color='#f5af42')
@@ -146,16 +152,10 @@ class MainMenu(Entity):
                 bar.value = i+1
             if bar.value == 100:
                 from test import Game
-                Game()
 
             print('loaded textures')
             hide(self.loading_screen)
-            # show(self.player,self.background,self.minimap)
-            # show(self.player.healthbar_bg,self.player.healthbar)
-            # import servertest
-
-            # Scene()
-            # self.player.text.visible=True
+        '''
 
          # Reference of our action function for play button
         def play_btn():
