@@ -2,8 +2,8 @@ from ursina import Entity, Vec3, Vec2, color, collider, destroy
 
 class Enemy(Entity):
     def __init__(self, info):
-        ship = info['ship']
-        img_path = f'./Ships/ship_{ship}.png'
+        self.ship = info['ship']
+        img_path = f'./Ships/ship_{self.ship}_1.png'
         super().__init__(
             position=Vec2(*info['position']),
             model="quad",
@@ -21,14 +21,6 @@ class Enemy(Entity):
             origin=Vec2(0, 0)
         )
 
-        self.healthbar = Entity(
-            parent=self,
-            model="quad",
-            position=Vec3(0, -.3, -1),
-            color=color.rgb(0, 255, 0),
-            scale=Vec2(1.5,.1)
-        )
-
         self.maxHealth = 100
         self.health = float(info['health'])
         self.id = info['id']
@@ -36,10 +28,12 @@ class Enemy(Entity):
     def update(self):
         if not hasattr(self, 'health'): return
         try:
-            # if not self.health:
-            #     self.health = 0
             if self.health <= 0:
-                pass
-            self.healthbar.scale_x = (self.health + 0.001) / self.maxHealth * 1.5
+                self.texture = f'./Ships/ship_{self.ship}_4.png'
+            elif self.health <= 30:
+                self.texture = f'./Ships/ship_{self.ship}_3.png'
+            elif self.health <= 70:
+                self.texture = f'./Ships/ship_{self.ship}_2.png'
+            
         except AttributeError as e:
             print(e)

@@ -22,13 +22,13 @@ class Game(Entity):
         can_continue = True
 
         while can_continue:
-            self.n = Network(socket.gethostname(), 8000, {'username': 'manh', 'health': 20, 'damage': 1, 'ship': character+1})
-            self.n.settimeout(5)
+            self.network = Network(socket.gethostname(), 8000, {'username': 'manh', 'health': 100, 'damage': 1, 'ship': character+1})
+            self.network.settimeout(5)
             
             can_continue = False
 
             try:
-                self.n.connect()
+                self.network.connect()
             except ConnectionRefusedError:
                 print("\nConnection refused! This can be because server hasn't started or has reached it's self.player limit.")
                 can_continue = True
@@ -39,23 +39,26 @@ class Game(Entity):
                 print("\nThe IP address you entered is invalid, please try again with a valid address...")
                 can_continue = True
             finally:
-                self.n.settimeout(None)
+                self.network.settimeout(None)
+                
         super().__init__(position=(0, 0))
-        self.coin = Coin(self.n.coinPosition)
-        self.player = Player(self.n.initPosition, self.n, self.coin)
-        self.player.texture = f'./Ships/ship_{character+1}'
+        self.coin = Coin(self.network.coinPosition)
+        self.player = Player(self.network.initPosition, character + 1, self.network, self.coin)
+        self.player.id = self.network.id
 
         self.prev_pos = self.player.world_position
         self.prev_dir = self.player.world_rotation_z
 
-        background = Sea(self.n.restrictor)
+        self.background = Sea(self.network.restrictor)
 
-        plant = Plant()
-        gameUI = GameUI(self.player)
+        Plant()
+        GameUI(self.player)
+        camera.z = -30
 
         self.enemies = []
         self.scores = []
 
+        self.game_ended = False
         msg_thread = threading.Thread(target=self.protocol, daemon=True)
         msg_thread.start()
 
@@ -68,14 +71,14 @@ class Game(Entity):
             # Audio('audios/shot.wav').play()
             if time.time() - self.player.reload > 1:
                 self.player.reload = time.time()
-                bullet = CannonBall(self.player, (self.player.x, self.player.y), mouse.x, mouse.y, 10, self.n)
-                self.n.send_bullet(bullet)
+                bullet = CannonBall(self.player, (self.player.x, self.player.y), mouse.x, mouse.y, 10, self.network)
+                self.network.send_bullet(bullet)
 
     def protocol(self):
-
         while True:
+            if self.game_ended: return
             try:
-                infor = self.n.receive_info()
+                infor = self.network.receive_info()
             except Exception as e:
                 continue
 
@@ -121,7 +124,7 @@ class Game(Entity):
                         if e.id == b_enemy_id:
                             enemy = e
 
-                    CannonBall(self.player, b_pos, b_rediffX, b_rediffY, b_damage, self.n, enemy=enemy)
+                    CannonBall(self.player, b_pos, b_rediffX, b_rediffY, b_damage, self.network, enemy=enemy)
 
 
                 elif info["object"] == "health_update":
@@ -129,7 +132,7 @@ class Game(Entity):
 
                     enemy = None
 
-                    if enemy_id == self.n.id:
+                    if enemy_id == self.network.id:
                         enemy = self.player
                     else:
                         for e in self.enemies:
@@ -147,7 +150,7 @@ class Game(Entity):
 
                     enemy = None
 
-                    if enemy_id == self.n.id:
+                    if enemy_id == self.network.id:
                         enemy = self.player
                     else:
                         for e in self.enemies:
@@ -164,27 +167,35 @@ class Game(Entity):
                     self.coin.destroy_coin(info['coin_id'])
 
                 elif info['object'] == 'end_game':
-                    if not self.player.game_ended:
+                    if not self.player.death_shown:
                         GameOver()
-                        self.player.game_ended = True
+                        self.player.death_shown = True
                         self.scores.append(('player', self.player.score))
 
-                    self.n.close()
+                    self.game_ended = True
+                    self.network.close()
 
     def update(self):
         if not hasattr(self, 'player'): return
-        if self.player.health > 0 and not self.player.game_ended:
+        if self.player.health > 0 and not self.player.death_shown:
             if self.prev_pos != self.player.world_position or self.prev_dir != self.player.world_rotation_z:
-                self.n.send_player(self.player)
+                self.network.send_player(self.player)
 
-            self.prev_pos = self.player.world_position
-            self.prev_dir = self.player.world_rotation_z
+                self.prev_pos = self.player.world_position
+                self.prev_dir = self.player.world_rotation_z
+            
 
-        elif not self.player.game_ended:
+            if self.background.restrictor:
+                if self.player.x**2 + self.player.y**2 > self.background.restrictor.scale_x**2/4 and time.time() > self.background.restrictor.burn_time:
+                    self.background.restrictor.burn_time = time.time() + 1
+                    self.player.health -= 100/20 
+                    self.network.send_health(self.player)
+
+        elif not self.player.death_shown:
             GameOver()
-            self.n.send_player(self.player)
-            self.n.send_score(self.player)
-            self.player.game_ended = True
+            self.network.send_player(self.player)
+            self.network.send_score(self.player)
+            self.player.death_shown = True
             self.scores.append(('player', self.player.score))
             print(self.scores)
 

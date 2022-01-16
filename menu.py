@@ -62,7 +62,7 @@ class MainMenu(Entity):
             Game(1)
 
             # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", list[0])
+            # self.player.texture= os.path.join("Ships", lst[0])
             isSounding('mouse_click')
             # t = time.time()
         
@@ -79,7 +79,7 @@ class MainMenu(Entity):
             Game(2)
 
             # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", list[1])
+            # self.player.texture= os.path.join("Ships", lst[1])
             isSounding('mouse_click')
             # t = time.time()
             
@@ -95,7 +95,7 @@ class MainMenu(Entity):
             Game(3)
 
             # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", list[2])
+            # self.player.texture= os.path.join("Ships", lst[2])
             isSounding('mouse_click')
 
             # t = time.time()
@@ -136,13 +136,13 @@ class MainMenu(Entity):
             #     print('error starting thread', e)
 
             # print('---', time.time()-t)
-        list = ["ship_2.png","ship_3.png","ship_4.png","ship_5.png","ship_6.png"]
+        lst = ["ship_2_1.png","ship_3_1.png","ship_4_1.png","ship_5_1.png","ship_6_1.png"]
 
-        self.chac1=Chacracter('Chacracter 1',self.choose_menu,-0.4,0.1,list[0],choose1)
-        self.chac2=Chacracter('Chacracter 2',self.choose_menu,0,0.1,list[1],choose2)
-        self.chac3=Chacracter('Chacracter 3',self.choose_menu,0.4,0.1,list[2],choose3)
-        self.chac4=Chacracter('Chacracter 4',self.choose_menu,-0.2,-0.2,list[3],choose4)
-        self.chac5=Chacracter('Chacracter 5',self.choose_menu,0.2,-0.2,list[4],choose5)
+        self.chac1=Chacracter('Chacracter 1',self.choose_menu,-0.4,0.1,lst[0],choose1)
+        self.chac2=Chacracter('Chacracter 2',self.choose_menu,0,0.1,lst[1],choose2)
+        self.chac3=Chacracter('Chacracter 3',self.choose_menu,0.4,0.1,lst[2],choose3)
+        self.chac4=Chacracter('Chacracter 4',self.choose_menu,-0.2,-0.2,lst[3],choose4)
+        self.chac5=Chacracter('Chacracter 5',self.choose_menu,0.2,-0.2,lst[4],choose5)
         '''
         def loadTextures():
             textures_to_load = ['brick', 'shore', 'grass', 'heightmap'] * 25
@@ -174,7 +174,7 @@ class MainMenu(Entity):
             isSounding('mouse_click')
             application.quit()
 
-        # Button list
+        # Button lst
         Entity(parent=self.main_menu, model='quad',texture='play_btn.jpg',position=(0,0,0),scale=(0.5,0.1,1))
         Button('Play',parent=self.main_menu,position=(0,0,0),scale=(0.2,0.06,1),color=rgb(255,255,255,0),on_click=play_btn)
 
