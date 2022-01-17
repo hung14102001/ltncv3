@@ -22,7 +22,11 @@ class Game(Entity):
         can_continue = True
 
         while can_continue:
-            self.network = Network(socket.gethostname(), 8000, {'username': 'manh', 'health': 100, 'damage': 1, 'ship': character+1})
+            self.network = Network(
+                socket.gethostname(), 
+                8000, 
+                {'username': 'manh', 'health': 100, 'ship': character+1}
+            )
             self.network.settimeout(5)
             
             can_continue = False
@@ -40,7 +44,7 @@ class Game(Entity):
                 can_continue = True
             finally:
                 self.network.settimeout(None)
-                
+
         super().__init__(position=(0, 0))
         self.coin = Coin(self.network.coinPosition)
         self.player = Player(self.network.initPosition, character + 1, self.network, self.coin)

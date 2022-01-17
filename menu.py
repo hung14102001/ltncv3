@@ -7,7 +7,7 @@ from random import randint
 from player import Player
 from cannonball import CannonBall
 from sea import Sea
-from chacracter import Chacracter
+from character import Character
 from loading import LoadingWheel
 from direct.stdpy import thread
 from ursina.prefabs.health_bar import HealthBar
@@ -62,17 +62,7 @@ class MainMenu(Entity):
             Game(1)
 
             # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", lst[0])
             isSounding('mouse_click')
-            # t = time.time()
-        
-            # try:
-            #     loadTextures()
-            #     # thread.start_new_thread(function=loadTextures, args='')
-            # except Exception as e:
-            #     print('error starting thread', e)
-
-            # print('---', time.time()-t)
 
         def choose2():
             hide(self.choose_menu)
@@ -81,46 +71,19 @@ class MainMenu(Entity):
             # show(self.loading_screen)
             # self.player.texture= os.path.join("Ships", lst[1])
             isSounding('mouse_click')
-            # t = time.time()
             
-            # try:
-            #     thread.start_new_thread(function=loadTextures, args='')
-            # except Exception as e:
-            #     print('error starting thread', e)
-
-            # print('---', time.time()-t)
 
         def choose3():
             hide(self.choose_menu)
             Game(3)
 
-            # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", lst[2])
             isSounding('mouse_click')
-
-            # t = time.time()
-        
-            # try:
-            #     thread.start_new_thread(function=loadTextures, args='')
-            # except Exception as e:
-            #     print('error starting thread', e)
-
-            # print('---', time.time()-t)
 
         def choose4():
             hide(self.choose_menu)
             # show(self.loading_screen)
             Game(4)
             isSounding('mouse_click')
-            '''
-            t = time.time()
-            try:
-                thread.start_new_thread(function=loadTextures, args='')
-            except Exception as e:
-                print('error starting thread', e)
-
-            print('---', time.time()-t)
-            '''
 
         def choose5():
             Game(5)
@@ -128,21 +91,13 @@ class MainMenu(Entity):
             hide(self.choose_menu)
             isSounding('mouse_click')
             
-            # t = time.time()
-        
-            # try:
-            #     thread.start_new_thread(function=loadTextures, args='')
-            # except Exception as e:
-            #     print('error starting thread', e)
-
-            # print('---', time.time()-t)
         lst = ["ship_2_1.png","ship_3_1.png","ship_4_1.png","ship_5_1.png","ship_6_1.png"]
 
-        self.chac1=Chacracter('Chacracter 1',self.choose_menu,-0.4,0.1,lst[0],choose1)
-        self.chac2=Chacracter('Chacracter 2',self.choose_menu,0,0.1,lst[1],choose2)
-        self.chac3=Chacracter('Chacracter 3',self.choose_menu,0.4,0.1,lst[2],choose3)
-        self.chac4=Chacracter('Chacracter 4',self.choose_menu,-0.2,-0.2,lst[3],choose4)
-        self.chac5=Chacracter('Chacracter 5',self.choose_menu,0.2,-0.2,lst[4],choose5)
+        self.cha1=Character('Character 1',self.choose_menu,-0.4,0.1,lst[0],choose1)
+        self.cha2=Character('Character 2',self.choose_menu,0,0.1,lst[1],choose2)
+        self.cha3=Character('Character 3',self.choose_menu,0.4,0.1,lst[2],choose3)
+        self.cha4=Character('Character 4',self.choose_menu,-0.2,-0.2,lst[3],choose4)
+        self.cha5=Character('Character 5',self.choose_menu,0.2,-0.2,lst[4],choose5)
         '''
         def loadTextures():
             textures_to_load = ['brick', 'shore', 'grass', 'heightmap'] * 25
@@ -185,9 +140,9 @@ class MainMenu(Entity):
         Button('Exit',parent=self.main_menu,position=(0,-0.3,0),scale=(0.2,0.06,1),color=rgb(255,255,255,0),on_click=quit_game)
         # [MAIN MENU] WINDOW END
 
-        # [CHOOSE CHACRACTER] WINDOW START
+        # [CHOOSE CHARACTER] WINDOW START
         Entity(parent=self.choose_menu,model='quad',texture='title.png',position=(0,0.4),scale=(0.9,0.2))
-        Text("CHOOSE CHACRACTER",parent=self.choose_menu,position=(-0.2,0.42,0), scale=1.5,color=color.black)
+        Text("CHOOSE CHARACTER",parent=self.choose_menu,position=(-0.2,0.42,0), scale=1.5,color=color.black)
 
         def play_back_btn_action():
             isSounding('mouse_click')

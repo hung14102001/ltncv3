@@ -129,7 +129,6 @@ def initPlayerInfo(new_player_id, info: str):
 
     usrname = msg_json["username"]
     heath = msg_json["health"]
-    damage = msg_json["damage"]
     ship = msg_json["ship"]
 
     x = random.randint(-19, 19)
@@ -145,7 +144,6 @@ def initPlayerInfo(new_player_id, info: str):
         'username': usrname, 
         'position': position, 
         'health': heath, 
-        'damage': damage, 
         'ship': ship,
     }
 
@@ -182,7 +180,6 @@ def main():
             "position": init_info['position'], 
             "direction": 0, 
             "health": init_info['health'],
-            "damage": init_info['damage'],
             "ship": init_info['ship'],
             'left': False
         }
@@ -230,7 +227,6 @@ def main():
                         "username": new_player_info["username"],
                         "position": new_player_info["position"],
                         "health": new_player_info["health"],
-                        "damage": new_player_info['damage'],
                         "ship": new_player_info['ship'],
                         "joined": True,
                         "left": new_player_info['left']
@@ -251,7 +247,6 @@ def main():
                         "username": player_info["username"],
                         "position": player_info["position"],
                         "health": player_info["health"],
-                        "damage": player_info['damage'],
                         "ship": player_info['ship'],
                         "joined": True,
                         "left": False

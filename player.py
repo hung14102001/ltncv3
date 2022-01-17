@@ -74,18 +74,8 @@ class Player(Entity):
                 camera.z = -50
             self.rotation_z = angle
             
-            if self.x > 9.5:
-                camera.x = 9.5
-            elif self.x < -9.5:
-                camera.x = -9.5
-            else: 
-                camera.x = self.x
-            if self.y > 13.5:
-                camera.y = 13.5
-            elif self.y < -13.5:
-                camera.y = -13.5
-            else: 
-                camera.y = self.y
+            camera.y = self.y
+            camera.x = self.x
             
             if self.health <= 30:
                 self.texture = f'./Ships/ship_{self.ship}_3.png'
