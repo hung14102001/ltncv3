@@ -63,8 +63,8 @@ class Game(Entity):
         self.scores = []
 
         self.game_ended = False
-        msg_thread = threading.Thread(target=self.protocol, daemon=True)
-        msg_thread.start()
+        self.msg_thread = threading.Thread(target=self.protocol, daemon=True)
+        self.msg_thread.start()
 
     def input(self, key):
         # if key == 'esc':
@@ -192,7 +192,7 @@ class Game(Entity):
             if self.background.restrictor:
                 if self.player.x**2 + self.player.y**2 > self.background.restrictor.scale_x**2/4 and time.time() > self.background.restrictor.burn_time:
                     self.background.restrictor.burn_time = time.time() + 1
-                    self.player.health -= 100/20 
+                    self.player.health -= 100/2
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:
@@ -204,6 +204,8 @@ class Game(Entity):
             print(self.scores)
 
     def destroyGame(self):
+        self.network.client.close()
+        del self.msg_thread
         self.ui.destroySelf()
         self.plants.destroySelf()
         self.background.destroySelf()
@@ -212,6 +214,8 @@ class Game(Entity):
         destroy(self.player)
         for e in self.enemies:
             destroy(e)
+            del e
         destroy(self)
+        del self
 
 # app.run()

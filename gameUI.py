@@ -26,9 +26,15 @@ class GameUI (Entity):
 
     def destroySelf(self):
         destroy(self.text)
+        del self.text
         destroy(self.minimap)
+        del self.minimap
         destroy(self.healthBar.healthbar_bg)
+        del self.healthBar.healthbar_bg
         destroy(self.healthBar.healthbar)
+        del self.healthBar.healthbar
+        destroy(self)
+        del self
 
 
 class HealthBar():
