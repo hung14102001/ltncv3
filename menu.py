@@ -57,60 +57,27 @@ class MainMenu(Entity):
             for arg in argv:
                 display(arg, False)
                 
-        def choose1():
-            hide(self.choose_menu)
-            Game(1)
-
-            # show(self.loading_screen)
-            isSounding('mouse_click')
-
-        def choose2():
-            hide(self.choose_menu)
-            Game(2)
-
-            # show(self.loading_screen)
-            # self.player.texture= os.path.join("Ships", lst[1])
-            isSounding('mouse_click')
-            
-
-        def choose3():
-            hide(self.choose_menu)
-            Game(3)
-
-            isSounding('mouse_click')
-
-        def choose4():
-            hide(self.choose_menu)
-            # show(self.loading_screen)
-            Game(4)
-            isSounding('mouse_click')
-
-        def choose5():
-            Game(5)
+        def chooseChar(char):
+            Game(char)
 
             hide(self.choose_menu)
             isSounding('mouse_click')
             
-        lst = ["ship_2_1.png","ship_3_1.png","ship_4_1.png","ship_5_1.png","ship_6_1.png"]
+        lst = ['ship_1.png', "ship_2_1.png","ship_3_1.png","ship_4_1.png","ship_5_1.png","ship_6_1.png"]
 
-        self.cha1=Character('Character 1',self.choose_menu,-0.4,0.1,lst[0],choose1)
-        self.cha2=Character('Character 2',self.choose_menu,0,0.1,lst[1],choose2)
-        self.cha3=Character('Character 3',self.choose_menu,0.4,0.1,lst[2],choose3)
-        self.cha4=Character('Character 4',self.choose_menu,-0.2,-0.2,lst[3],choose4)
-        self.cha5=Character('Character 5',self.choose_menu,0.2,-0.2,lst[4],choose5)
-        '''
-        def loadTextures():
-            textures_to_load = ['brick', 'shore', 'grass', 'heightmap'] * 25
-            bar = HealthBar(max_value=len(textures_to_load), value=0, position=(-.5,-.35,-2), scale_x=1, animation_duration=0, world_parent=self.loading_screen, bar_color='#f5af42')
-            for i, t in enumerate(textures_to_load):
-                load_texture(t)
-                bar.value = i+1
-            if bar.value == 100:
-                from test import Game
+        for i in range(1, len(lst)):
+            x = (-.6 + .4*i) if i < 3 else (-.8 + .4*(i-2))
+            y = .1 if i < 3 else -.2
+            position = Vec3(x, y, 1)
 
-            print('loaded textures')
-            hide(self.loading_screen)
-        '''
+            Character(
+                f'Character {i}',
+                self.choose_menu,
+                position,
+                lst[i],
+                chooseChar, 
+                param=i
+            )
 
          # Reference of our action function for play button
         def play_btn():
