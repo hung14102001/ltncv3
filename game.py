@@ -1,21 +1,16 @@
-from turtle import position
-from gameUI import GameUI
-from network import Network
+from ursina import *
 import socket
 import threading
-import os
 import time
 
-from re import A, escape
-from ursina import *
-from random import randint
+from network import Network
+from gameUI import GameUI
 from cannonball import CannonBall
 from player import Player
 from sea import Sea, Plant, Coin
 from endgame import GameOver
-
-from ursina.camera import Camera
 from enemy import Enemy
+
 
 class Game(Entity):
     def __init__(self, character) -> None:
@@ -23,31 +18,34 @@ class Game(Entity):
 
         while can_continue:
             self.network = Network(
-                socket.gethostname(), 
-                8000, 
+                socket.gethostname(),
+                8000,
                 {'username': 'manh', 'health': 100, 'ship': character+1}
             )
             self.network.settimeout(5)
-            
+
             can_continue = False
 
             try:
                 self.network.connect()
             except ConnectionRefusedError:
-                print("\nConnection refused! This can be because server hasn't started or has reached it's self.player limit.")
+                print(
+                    "\nConnection refused! This can be because server hasn't started or has reached it's self.player limit.")
                 can_continue = True
             except socket.timeout:
                 print("\nServer took too long to respond, please try again...")
                 can_continue = True
             except socket.gaierror:
-                print("\nThe IP address you entered is invalid, please try again with a valid address...")
+                print(
+                    "\nThe IP address you entered is invalid, please try again with a valid address...")
                 can_continue = True
             finally:
                 self.network.settimeout(None)
 
         super().__init__(position=(0, 0))
         self.coin = Coin(self.network.coinPosition)
-        self.player = Player(self.network.initPosition, character + 1, self.network, self.coin)
+        self.player = Player(self.network.initPosition,
+                             character + 1, self.network, self.coin)
         self.player.id = self.network.id
 
         self.prev_pos = self.player.world_position
@@ -75,12 +73,14 @@ class Game(Entity):
             # Audio('audios/shot.wav').play()
             if time.time() - self.player.reload > 1:
                 self.player.reload = time.time()
-                bullet = CannonBall(self.player, (self.player.x, self.player.y), mouse.x, mouse.y, 10, self.network)
+                bullet = CannonBall(
+                    self.player, (self.player.x, self.player.y), mouse.x, mouse.y, 10, self.network)
                 self.network.send_bullet(bullet)
 
     def protocol(self):
         while True:
-            if self.game_ended: return
+            if self.game_ended:
+                return
             try:
                 infor = self.network.receive_info()
             except Exception as e:
@@ -128,8 +128,8 @@ class Game(Entity):
                         if e.id == b_enemy_id:
                             enemy = e
 
-                    CannonBall(self.player, b_pos, b_rediffX, b_rediffY, b_damage, self.network, enemy=enemy)
-
+                    CannonBall(self.player, b_pos, b_rediffX,
+                               b_rediffY, b_damage, self.network, enemy=enemy)
 
                 elif info["object"] == "health_update":
                     enemy_id = info["id"]
@@ -180,19 +180,19 @@ class Game(Entity):
                     self.network.close()
 
     def update(self):
-        if not hasattr(self, 'player'): return
+        if not hasattr(self, 'player'):
+            return
         if self.player.health > 0 and not self.player.death_shown:
             if self.prev_pos != self.player.world_position or self.prev_dir != self.player.world_rotation_z:
                 self.network.send_player(self.player)
 
                 self.prev_pos = self.player.world_position
                 self.prev_dir = self.player.world_rotation_z
-            
 
             if self.background.restrictor:
                 if self.player.x**2 + self.player.y**2 > self.background.restrictor.scale_x**2/4 and time.time() > self.background.restrictor.burn_time:
                     self.background.restrictor.burn_time = time.time() + 1
-                    self.player.health -= 100/2
+                    self.player.health -= 100*.05
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:

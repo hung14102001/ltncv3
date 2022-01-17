@@ -1,8 +1,11 @@
-import os, math
+import os
+import math
 from enemy import Enemy
 from ursina import Entity, destroy
 from sea import CoinPart
 from helper import createAnimation
+
+
 class CannonBall(Entity):
     def __init__(self, player, position, rediffX, rediffY, damage, network, enemy=None):
 
@@ -13,7 +16,7 @@ class CannonBall(Entity):
             z=0,
             scale_x=0.18,
             scale_y=0.18,
-            collider = 'sphere'
+            collider='sphere'
         )
 
         self.rediffX = rediffX
@@ -31,10 +34,11 @@ class CannonBall(Entity):
 
         self.speed = 0.3
 
-        destroy(self,delay=10)
-        
+        destroy(self, delay=10)
+
     def update(self):
-        if not hasattr(self, 'rediffX'): return
+        if not hasattr(self, 'rediffX'):
+            return
         if self.rediffX < 0:
             self.x -= math.cos(self.rad)*self.speed
             self.y -= math.sin(self.rad)*self.speed
@@ -53,6 +57,6 @@ class CannonBall(Entity):
                     self.network.send_health(hitinfo.entity)
                 elif isinstance(hitinfo.entity, CoinPart):
                     destroy(hitinfo.entity)
-                createAnimation(self.x, self.y, 'kenney_piratePack/PNG/Default size/Effects/explosion')
+                createAnimation(self.x, self.y, './Assets/Effects/explosion')
 
             destroy(self)

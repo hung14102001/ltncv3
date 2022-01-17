@@ -44,7 +44,8 @@ class Network:
         self.coinPosition = info['coins']
 
     def receive_info(self):
-        if not self.client: return
+        if not self.client:
+            return
         try:
             msg = self.client.recv(self.recv_size)
         except socket.error as e:
@@ -56,7 +57,7 @@ class Network:
         msg_decoded = msg.decode("utf8")
 
         msg_json = [json.loads(e + '}') for e in msg_decoded.split('}')[:-1]]
-        
+
         return msg_json
 
     def send_player(self, player: Player):
@@ -131,7 +132,6 @@ class Network:
             self.client.send(coin_info_encoded)
         except socket.error as e:
             print(e)
-
 
     def close(self):
         # self.client.shutdown(socket.SHUT_RDWR)

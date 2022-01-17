@@ -1,5 +1,5 @@
 from ursina import Animation, destroy
-import time
+
 
 def createAnimation(x, y, path, time=1):
 

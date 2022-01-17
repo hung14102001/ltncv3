@@ -1,9 +1,11 @@
-from ursina import Entity, Vec3, Vec2, color, collider, destroy
+from ursina import Entity, Vec3, Vec2
+import os
+
 
 class Enemy(Entity):
     def __init__(self, info):
         self.ship = info['ship']
-        img_path = f'./Ships/ship_{self.ship}_1.png'
+        img_path = os.path.join("Ships", f"ship_{self.ship}_1.png")
         super().__init__(
             position=Vec2(*info['position']),
             model="quad",
@@ -26,14 +28,15 @@ class Enemy(Entity):
         self.id = info['id']
 
     def update(self):
-        if not hasattr(self, 'health'): return
+        if not hasattr(self, 'health'):
+            return
         try:
             if self.health <= 0:
-                self.texture = f'./Ships/ship_{self.ship}_4.png'
+                self.texture = os.path.join("Ships", f"ship_{self.ship}_4.png")
             elif self.health <= 30:
-                self.texture = f'./Ships/ship_{self.ship}_3.png'
+                self.texture = os.path.join("Ships", f"ship_{self.ship}_3.png")
             elif self.health <= 70:
-                self.texture = f'./Ships/ship_{self.ship}_2.png'
-            
+                self.texture = os.path.join("Ships", f"ship_{self.ship}_2.png")
+
         except AttributeError as e:
             print(e)

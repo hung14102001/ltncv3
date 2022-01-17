@@ -1,5 +1,4 @@
 from ursina import *
-from player import Player
 
 
 class GameUI (Entity):
@@ -7,14 +6,15 @@ class GameUI (Entity):
         super().__init__()
         self.player = player
         self.minimap = MiniMap()
-        
+
         self.healthBar = HealthBar()
         self.text = Text(
-            text="Score: 0 ", 
-            color=color.rgb(0,0,0), 
-            scale = 2.5, 
-            position=(-0.8,0.5,0)
+            text="Score: 0 ",
+            color=color.rgb(0, 0, 0),
+            scale=2.5,
+            position=(-0.8, 0.5, 0)
         )
+
     def update(self):
         if self.minimap:
             self.minimap.playerRep.x = self.player.x/40
@@ -44,7 +44,7 @@ class HealthBar():
         self.healthbar_bg = Entity(
             parent=camera.ui,
             model="quad",
-            color= color.rgb(255, 245, 245),
+            color=color.rgb(255, 245, 245),
             position=self.healthbar_pos,
             scale=self.healthbar_size
         )
@@ -56,6 +56,7 @@ class HealthBar():
             scale=self.healthbar_size
         )
 
+
 class MiniMap(Entity):
     def __init__(self):
         super().__init__(
@@ -65,7 +66,7 @@ class MiniMap(Entity):
             position=Vec2(0.74, 0.35),
             color=color.rgb(161, 234, 255)
         )
-        
+
         black = color.rgb(0, 0, 0)
         red = color.rgb(255, 0, 0)
         green = color.rgb(0, 255, 0)
@@ -90,28 +91,28 @@ class MiniMap(Entity):
             parent=self,
             scale=(.05, 0.2),
             model='quad',
-            position=(0,-0.38,0),
+            position=(0, -0.38, 0),
             color=bistre
         )
         self.quarter = Entity(
             parent=self,
             scale=(0.2, .05),
             model='quad',
-            position=(-0.38,0,0),
+            position=(-0.38, 0, 0),
             color=bistre
         )
         self.quarter = Entity(
             parent=self,
             scale=(.05, 0.2),
             model='quad',
-            position=(0,0.38,0),
+            position=(0, 0.38, 0),
             color=bistre
         )
         self.quarter = Entity(
             parent=self,
             scale=(0.2, .05),
             model='quad',
-            position=(0.38,0,0),
+            position=(0.38, 0, 0),
             color=bistre
         )
 
@@ -119,7 +120,7 @@ class MiniMap(Entity):
             parent=self,
             scale=(.095, .095),
             model='quad',
-            position=(0.175,0.175,0),
+            position=(0.175, 0.175, 0),
             color=bistre
         )
 
@@ -127,7 +128,7 @@ class MiniMap(Entity):
             parent=self,
             scale=(.095, .095),
             model='quad',
-            position=(-0.175,0.175,0),
+            position=(-0.175, 0.175, 0),
             color=bistre
         )
 
@@ -135,7 +136,7 @@ class MiniMap(Entity):
             parent=self,
             scale=(.095, .095),
             model='quad',
-            position=(0.175,-0.175,0),
+            position=(0.175, -0.175, 0),
             color=bistre
         )
 
@@ -143,7 +144,7 @@ class MiniMap(Entity):
             parent=self,
             scale=(.095, .095),
             model='quad',
-            position=(-0.175,-0.175,0),
+            position=(-0.175, -0.175, 0),
             color=bistre
         )
 
@@ -151,13 +152,13 @@ class MiniMap(Entity):
             parent=self,
             scale=(.14, .14),
             model='quad',
-            position=(0,0,0),
+            position=(0, 0, 0),
             color=bistre
         )
         self.bigIsland = Entity(
             parent=self,
             scale=(.1, .1),
             model='quad',
-            position=(0,0,-0.1),
+            position=(0, 0, -0.1),
             color=green
         )

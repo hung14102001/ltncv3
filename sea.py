@@ -3,9 +3,6 @@ import ursina
 from random import randint
 import time
 
-from ursina import collider    
-
-# self.collider = BoxCollider(self, size=Vec3(1, 2, 1))
 
 class SeaPart(ursina.Entity):
     def __init__(self, position):
@@ -16,6 +13,7 @@ class SeaPart(ursina.Entity):
             texture=os.path.join("Tiles", "tile_73.png")
         )
         self.texture.filtering = None
+
 
 class SoilPart(ursina.Entity):
     def __init__(self, position):
@@ -28,8 +26,9 @@ class SoilPart(ursina.Entity):
         )
         self.texture.filtering = None
 
+
 class IslandPart(ursina.Entity):
-    def __init__(self, position,img):
+    def __init__(self, position, img):
         super().__init__(
             position=position,
             scale=1,
@@ -39,45 +38,57 @@ class IslandPart(ursina.Entity):
         )
         # self.texture.filtering = None
 
+
 class Island2x2:
-    tiles = [os.path.join("Tiles",f"tile_{x}") for x in range(0,96)]
+    tiles = [os.path.join("Tiles", f"tile_{x}") for x in range(0, 96)]
+
     def __init__(self, position_x, position_y):
         self.entities = []
         for j in range(0, 2):
             for i in range(0, 2):
-                part = IslandPart(ursina.Vec3(position_x + i, position_y - j,0), self.tiles[16*j + i+4])
+                part = IslandPart(ursina.Vec3(
+                    position_x + i, position_y - j, 0), self.tiles[16*j + i+4])
                 self.entities.append(part)
+
     def destroySelf(self):
         for e in self.entities:
             ursina.destroy(e)
 
 
 class Island4x4:
-    tiles = [os.path.join("Tiles",f"tile_{x}") for x in range(0,96)]
+    tiles = [os.path.join("Tiles", f"tile_{x}") for x in range(0, 96)]
+
     def __init__(self, position_x, position_y):
         self.entities = []
         for j in range(0, 4):
             for i in range(0, 4):
-                part = IslandPart(ursina.Vec3(position_x + i, position_y - j,0), self.tiles[16*((j+1)//2) + ((i+1)//2) + 1 ])
+                part = IslandPart(ursina.Vec3(
+                    position_x + i, position_y - j, 0), self.tiles[16*((j+1)//2) + ((i+1)//2) + 1])
                 self.entities.append(part)
+
     def destroySelf(self):
         for e in self.entities:
             ursina.destroy(e)
-            
+
+
 class Island6x6:
-    tiles = [os.path.join("Tiles",f"tile_{x}") for x in range(0,96)]
+    tiles = [os.path.join("Tiles", f"tile_{x}") for x in range(0, 96)]
+
     def __init__(self, position_x, position_y):
         self.entities = []
         for j in range(0, 6):
-                for i in range(0, 6):
-                    part = IslandPart(ursina.Vec3(position_x + i, position_y - j,0), self.tiles[16*((j+1)//2) + ((i+1)//2) + 6])
-                    self.entities.append(part)
+            for i in range(0, 6):
+                part = IslandPart(ursina.Vec3(
+                    position_x + i, position_y - j, 0), self.tiles[16*((j+1)//2) + ((i+1)//2) + 6])
+                self.entities.append(part)
+
     def destroySelf(self):
         for e in self.entities:
             ursina.destroy(e)
-            
+
+
 class PlantPart(ursina.Entity):
-    def __init__(self, position,img):
+    def __init__(self, position, img):
         super().__init__(
             position=position,
             scale=1,
@@ -85,6 +96,7 @@ class PlantPart(ursina.Entity):
             texture=img,
             # collider="box"
         )
+
 
 class CoinPart(ursina.Entity):
     def __init__(self, index, position):
@@ -97,12 +109,14 @@ class CoinPart(ursina.Entity):
             collider="box"
         )
         self.index = index
+
+
 class Coin:
     def __init__(self, position_list):
         self.coin_list = {}
         for i in position_list:
             self.coin_list[i] = CoinPart(i, ursina.Vec2(*position_list[i]))
-        
+
     def destroy_coin(self, index):
         coin = self.coin_list[index]
         ursina.destroy(coin)
@@ -113,18 +127,19 @@ class Coin:
             ursina.destroy(self.coin_list[c])
         del self
 
-    
+
 class Plant:
-    tiles = [os.path.join("Tiles",f"tile_{x}") for x in range(0,96)]
+    tiles = [os.path.join("Tiles", f"tile_{x}") for x in range(0, 96)]
+
     def __init__(self):
         self.entities = []
-        for x in range(0,10):
+        for x in range(0, 10):
             for i in range(0, 3):
                 px = randint(-20, 20)
                 py = randint(-20, 20)
                 part = PlantPart(ursina.Vec3(px+i, py, 0), self.tiles[70+i])
                 self.entities.append(part)
-        for x in range(0,10):
+        for x in range(0, 10):
             for i in range(0, 2):
                 px = randint(-20, 20)
                 py = randint(-20, 20)
@@ -134,25 +149,15 @@ class Plant:
     def destroySelf(self):
         for e in self.entities:
             ursina.destroy(e)
-class Restrictor(ursina.Entity):
-    __instance = None
 
-    @staticmethod 
-    def getInstance():
-        """ Static access method. """
-        # if Restrictor.__instance == None:
-        #     Restrictor()
-        return Restrictor.__instance
+
+class Restrictor(ursina.Entity):
 
     def __init__(self, init_time):
-        if Restrictor.__instance == None:
-            self.init_time = init_time
-            Restrictor.__instance = self
-
         super().__init__(
             model=ursina.Circle(resolution=50, mode='line'),
-            scale=(40*2**.5,40*2**.5),
-            color=ursina.color.rgb(0,0,0),
+            scale=(40*2**.5, 40*2**.5),
+            color=ursina.color.rgb(0, 0, 0),
         )
         self.burn_time = time.time()
         period = time.time() - init_time
@@ -170,7 +175,8 @@ class Restrictor(ursina.Entity):
 
     def update(self):
         if self.restricting:
-            if self.scale_x <= 0: return
+            if self.scale_x <= 0:
+                return
 
             self.scale -= ursina.time.dt
 
@@ -184,17 +190,18 @@ class Restrictor(ursina.Entity):
 
 
 class Sea:
-    tiles = [os.path.join("Tiles",f"tile_{x}") for x in range(0,96)]  
+    tiles = [os.path.join("Tiles", f"tile_{x}") for x in range(0, 96)]
+
     def __init__(self, init_time):
         self.entities_destroyable = []
-        self.entities = []  
+        self.entities = []
         for x in range(-20, 20, 2):
             for y in range(-20, 20, 2):
                 part = SeaPart(ursina.Vec3(x, y, 0.1))
                 self.entities_destroyable.append(part)
         for x in range(-30, 30, 2):
             for y in range(-30, 30, 2):
-                if x >= 20 or x <=-20 or y <= -20 or y >= 20:
+                if x >= 20 or x <= -20 or y <= -20 or y >= 20:
                     part = SoilPart(ursina.Vec3(x, y, 0))
                     self.entities_destroyable.append(part)
         # dọc dưới
@@ -238,21 +245,21 @@ class Sea:
         self.entities.append(island)
 
         # giữa
-        island = Island6x6(-2.5,2.5)
-        self.entities.append(island)
-        
-        # 4 góc
-        self.entities.append(island)
-        island = Island4x4(-8.5,-5.5)
-        self.entities.append(island)
-        island = Island4x4(-8.5,8.5)
-        self.entities.append(island)
-        island = Island4x4(5.5,-5.5)
-        self.entities.append(island)
-        island = Island4x4(5.5,8.5)
+        island = Island6x6(-2.5, 2.5)
         self.entities.append(island)
 
-        # đá 
+        # 4 góc
+        self.entities.append(island)
+        island = Island4x4(-8.5, -5.5)
+        self.entities.append(island)
+        island = Island4x4(-8.5, 8.5)
+        self.entities.append(island)
+        island = Island4x4(5.5, -5.5)
+        self.entities.append(island)
+        island = Island4x4(5.5, 8.5)
+        self.entities.append(island)
+
+        # đá
         # island = IslandPart(ursina.Vec3(0,0,0), self.tiles[0])
         self.restrictor = Restrictor(init_time)
         self.entities_destroyable.append(self.restrictor)

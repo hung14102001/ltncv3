@@ -1,9 +1,6 @@
-import os
-
 from ursina import *
-from random import randint
-from ursina.camera import Camera
 from menu import MainMenu
+import os
 
 # display the background
 app = Ursina()
@@ -18,9 +15,9 @@ window.fullscreen = False               # Do not go Fullscreen
 window.exit_button.visible = False
 window.fps_counter.enabled = False
 
-Text.default_font  = 'Font/aAbstractGroovy.ttf'
+Text.default_font = os.path.join('Assets', 'Font', 'aAbstractGroovy.ttf')
 
 main_menu = MainMenu()
-#gameover=GameOver()
+# gameover=GameOver()
 
 app.run()
