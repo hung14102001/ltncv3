@@ -40,14 +40,16 @@ class HealthBar():
             model="quad",
             color= color.rgb(255, 245, 245),
             position=self.healthbar_pos,
-            scale=self.healthbar_size
+            scale=self.healthbar_size,
+            enabled=False
         )
         self.healthbar = Entity(
             parent=camera.ui,
             model="quad",
             color=color.rgb(255, 54, 54),
             position=self.healthbar_pos,
-            scale=self.healthbar_size
+            scale=self.healthbar_size,
+            # enabled=False
         )
 
 class MiniMap(Entity):
@@ -57,10 +59,11 @@ class MiniMap(Entity):
             parent=camera.ui,
             model="quad",
             position=Vec2(0.74, 0.35),
-            color=color.rgb(161, 234, 255)
+            color=color.rgb(161, 234, 255),
+            # enabled=False
         )
         
-        black = color.rgb(0, 0, 0)
+        # black = color.rgb(0, 0, 0)
         red = color.rgb(255, 0, 0)
         green = color.rgb(0, 255, 0)
         bistre = color.rgb(205, 133, 63)
@@ -152,6 +155,6 @@ class MiniMap(Entity):
             parent=self,
             scale=(.1, .1),
             model='quad',
-            position=(0,0,-0.1),
+            position=(0,0,0),
             color=green
         )

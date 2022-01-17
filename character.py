@@ -9,11 +9,11 @@ class Character(Button):
             position=position, 
             scale_y=0.15, 
             scale_x=.1,
-            text_origin=(0.4,-1),
+            text_origin=(0.25,-1),
             icon=icon,
             color=rgb(255,255,255,0), 
             on_click=submit
         )
-        Entity(parent=self,model='quad',texture='next_btn.png',position=(0,-0.9),scale=(2.3, 2))
-        Button(parent=self,position=(0,-0.84),color=rgb(255,255,255,0),scale=(1.8, .4),on_click=functools.partial(submit, param))
+        Entity(parent=self,model='quad',texture='next_btn.png',position=(0,-0.9),scale=(3.1, 2))
+        Button(parent=self,position=(0,-0.84),color=rgb(255,255,255,0),scale=(2.2, .4),on_click=functools.partial(submit, param))
                 

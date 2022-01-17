@@ -12,13 +12,13 @@ from random import randint
 from cannonball import CannonBall
 from player import Player
 from sea import Sea, Plant, Coin
-from endgame import GameOver
+from gameover import GameOver
 
 from ursina.camera import Camera
 from enemy import Enemy
 
 class Game(Entity):
-    def __init__(self, character) -> None:
+    def __init__(self, character,sound) -> None:
         can_continue = True
 
         while can_continue:
@@ -57,6 +57,7 @@ class Game(Entity):
 
         self.plants = Plant()
         self.ui = GameUI(self.player)
+        self.sound=sound
         camera.z = -30
 
         self.enemies = []
@@ -172,7 +173,7 @@ class Game(Entity):
 
                 elif info['object'] == 'end_game':
                     if not self.player.death_shown:
-                        GameOver(self)
+                        GameOver(self,self.sound)
                         self.player.death_shown = True
                         self.scores.append(('player', self.player.score))
 
@@ -196,7 +197,7 @@ class Game(Entity):
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:
-            GameOver(self)
+            GameOver(self,self.sound)
             self.network.send_player(self.player)
             self.network.send_score(self.player)
             self.player.death_shown = True
