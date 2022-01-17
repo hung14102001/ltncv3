@@ -24,6 +24,13 @@ class GameUI (Entity):
             self.healthBar.healthbar.scale_x = self.healthBar.healthbar_size.x*self.player.health/100
             self.text.text = "Score: " + str(self.player.score)
 
+    def destroySelf(self):
+        destroy(self.text)
+        destroy(self.minimap)
+        destroy(self.healthBar.healthbar_bg)
+        destroy(self.healthBar.healthbar)
+
+
 class HealthBar():
     def __init__(self):
         self.healthbar_pos = Vec2(0, -.45)

@@ -1,7 +1,7 @@
 from ursina import *
 
 class GameOver(Entity):
-    def __init__(self):
+    def __init__(self, game):
         super().__init__(parent=camera.ui)
         self.bg = Entity(parent=self,model='quad',texture='game_over_bg.jpg',position=(0,0.02,0),scale=(1,0.6,0))
         self.mess = Entity(parent=self,model='quad',texture='game_over.png',position=(0,0,0),scale=1)
@@ -11,7 +11,11 @@ class GameOver(Entity):
             self.disable()
 
         def home_back_action():
-            pass
+            from menu import MainMenu
+            mm = MainMenu.getInstance()
+            mm.show(mm.bg, mm.main_menu)
+            game.destroyGame()
+            destroy(self)
 
         Entity(parent=self,model='quad',texture='play_btn.jpg',position=(0.2,-0.3),scale=(0.5,0.1))
         Button("Play again", parent=self,position=(0.2,-0.3), scale=(0.24, 0.06), color=rgb(255,255,255,0),
@@ -19,7 +23,7 @@ class GameOver(Entity):
         
         Entity(parent=self,model='quad',texture='options_btn.jpg',position=(-0.2,-0.3),scale=(0.5,0.1))
         Button("Home", parent=self,position=(-0.2,-0.3), scale=(0.24, 0.06), color=rgb(255,255,255,0),
-                text_color=color.black,on_click=play_again_btn_action)
+                text_color=color.black,on_click=home_back_action)
 
 class Completed(Entity):
     def __init__(self,sound):

@@ -4,7 +4,6 @@ from ursina import *
 from random import randint
 from ursina.camera import Camera
 from menu import MainMenu
-from endgame import GameOver
 
 # display the background
 app = Ursina()

@@ -55,8 +55,8 @@ class Game(Entity):
 
         self.background = Sea(self.network.restrictor)
 
-        Plant()
-        GameUI(self.player)
+        self.plants = Plant()
+        self.ui = GameUI(self.player)
         camera.z = -30
 
         self.enemies = []
@@ -172,7 +172,7 @@ class Game(Entity):
 
                 elif info['object'] == 'end_game':
                     if not self.player.death_shown:
-                        GameOver()
+                        GameOver(self)
                         self.player.death_shown = True
                         self.scores.append(('player', self.player.score))
 
@@ -196,12 +196,22 @@ class Game(Entity):
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:
-            GameOver()
+            GameOver(self)
             self.network.send_player(self.player)
             self.network.send_score(self.player)
             self.player.death_shown = True
             self.scores.append(('player', self.player.score))
             print(self.scores)
 
+    def destroyGame(self):
+        self.ui.destroySelf()
+        self.plants.destroySelf()
+        self.background.destroySelf()
+        self.coin.destroySelf()
+
+        destroy(self.player)
+        for e in self.enemies:
+            destroy(e)
+        destroy(self)
 
 # app.run()
