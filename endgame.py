@@ -15,7 +15,7 @@ class GameOver(Entity):
         def home_back_action():
             from menu import MainMenu
             mm = MainMenu.getInstance()
-            mm.show(mm.bg, mm.main_menu, mm.input_field)
+            mm.show(mm.bg, mm.main_menu)
             game.destroyGame()
             destroy(self)
 

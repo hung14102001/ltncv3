@@ -17,6 +17,6 @@ class Character(Button):
             on_click=submit
         )
         Entity(parent=self, model='quad', texture='next_btn.png',
-               position=(0, -0.9), scale=(2.3, 2))
+               position=(0, -0.9), scale=(3.5, 2))
         Button(parent=self, position=(0, -0.84), color=rgb(255, 255, 255, 0),
                scale=(1.8, .4), on_click=functools.partial(submit, param))

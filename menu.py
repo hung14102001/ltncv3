@@ -7,19 +7,8 @@ from game import Game
 
 
 class MainMenu(Entity):
-    import json
-    from web3 import Web3
 
     __instance = None
-    w3 = Web3(Web3.WebsocketProvider(
-        'wss://ropsten.infura.io/ws/v3/6d3df8badba94fd78e849a7d703fb914'))
-
-    with open(os.path.join("BattleShipNFT.json")) as f:
-        info_json = json.load(f)
-    abi = info_json["abi"]
-
-    myContract = w3.eth.contract(
-        address='0x17b3bc609d87faD52Ae31D782df67ffD421Fe672', abi=abi)
 
     @staticmethod
     def getInstance():
@@ -38,7 +27,6 @@ class MainMenu(Entity):
         # Create empty entities that will be parents of our menus content
         #self.title = Entity(parent=self,model='quad',texture='welcome2.jpg',position=(0,0.2),scale=1)
         self.user_address = '0'
-        self.input_field = InputField(paren=self, y=.1)
         self.bg = Entity(parent=self, model='quad',
                          texture=os.path.join('Assets', 'Image', 'bg2.png.jpg'), position=(0, 0), scale=(2, 1))
         self.main_menu = Entity(parent=self, enabled=True)
@@ -48,7 +36,6 @@ class MainMenu(Entity):
         # self.loading_screen = LoadingWheel(enabled=False)
         self.a = Audio('start_game', pitch=1, loop=False, autoPlay=True)
 
-        self.ships = []
         self.characters = []
 
         def isSounding(sound):
@@ -59,9 +46,14 @@ class MainMenu(Entity):
 
         # [MAIN MENU] WINDOWN START
 
-        def chooseChar(offset):
+        def chooseChar(ship):
+            char = {
+                'hp': 100,
+                'dmg': 15,
+                'type': ship,
+            }
 
-            Game(self.ships[offset])
+            Game(char)
 
             self.hide(self.choose_menu)
             isSounding('mouse_click')
@@ -70,41 +62,28 @@ class MainMenu(Entity):
                "ship_4_1.png", "ship_5_1.png", "ship_6_1.png"]
 
         # Reference of our action function for play button
+        for i in range(1, len(lst)):
+            x = (-.6 + .4*i) if i < 3 else (-.8 + .4*(i-2))
+            y = .1 if i < 3 else -.2
+            position = Vec3(x, y, 1)
+
+            Character(
+                f'Character {i}',
+                self.choose_menu,
+                position,
+                lst[i],
+                chooseChar,
+                param=i
+            )
 
         def play_btn():
             isSounding('mouse_click')
-            if self.input_field.text != self.user_address:
-
-                if self.fetchOwnerShips():
-                    for c in self.characters:
-                        destroy(c)
-                    if len(self.ships) > 0:
-                        for i in range(len(self.ships)):
-                            x = (-.6 + .4*i) if i < 3 else (-.8 + .4*(i-2))
-                            y = .1 if i < 3 else -.2
-                            position = Vec3(x, y, 1)
-                            id = self.ships[i]['id']
-                            type = self.ships[i]['type']
-
-                            self.characters.append(Character(
-                                f'ID {id}  ',
-                                self.choose_menu,
-                                position,
-                                lst[type],
-                                chooseChar,
-                                param=i
-                            ))
-                else:
-                    return
-
-            self.hide(self.input_field)
             self.hide(self.bg, self.main_menu)
             self.show(self.choose_menu)
 
         # Reference of our action function for options button
         def options_menu_btn():
             isSounding('mouse_click')
-            self.hide(self.input_field)
             self.hide(self.main_menu)
             self.show(self.options_menu)
 
@@ -138,7 +117,6 @@ class MainMenu(Entity):
 
         def play_back_btn_action():
             isSounding('mouse_click')
-            self.show(self.input_field)
             self.hide(self.choose_menu)
             self.show(self.bg, self.main_menu)
 
@@ -162,7 +140,6 @@ class MainMenu(Entity):
         # Reference of our action function for back button
         def options_back_btn_action():
             isSounding('mouse_click')
-            self.show(self.input_field)
             self.show(self.main_menu)
             self.hide(self.options_menu)
 
@@ -190,28 +167,3 @@ class MainMenu(Entity):
     def hide(self, *items):
         for arg in items:
             self.display(arg, False)
-
-    def fetchOwnerShips(self):
-        try:
-            shipIds = MainMenu.myContract.caller.getShipsByOwner(
-                self.input_field.text
-            )
-        except:
-            return False
-        myShips = []
-        self.ships = []
-        for i in shipIds:
-            ship = MainMenu.myContract.caller.battleShips(i)
-            ship = {
-                'id': ship[0],
-                'type': ship[1],
-                'exp': ship[2],
-                'level': ship[3],
-                'hp': ship[4],
-                'dmg': ship[5],
-            }
-            myShips.append(ship)
-
-        self.ships = myShips
-        self.user_address = self.input_field.text
-        return True
