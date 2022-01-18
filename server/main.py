@@ -43,7 +43,6 @@ def handle_messages(match_id: str, player_id: int):
     players = matches[match_id]['players']
     client_info = players[player_id]
     conn: socket.socket = client_info["socket"]
-    username = client_info["username"]
 
     while True:
         try:
@@ -105,7 +104,7 @@ def handle_messages(match_id: str, player_id: int):
                 pass
 
     print(
-        f"Player {username} with ID {player_id} has left the game {match_id}...")
+        f"Player with ID {player_id} has left the game {match_id}...")
 
     if players[player_id]['health'] > 0:
         del players[player_id]
@@ -113,8 +112,13 @@ def handle_messages(match_id: str, player_id: int):
     if match_id in matches:
         if len(matches[match_id]['players']) < 1:
             matches[match_id]['ended'] = True
+        if len([0 for p in players if players[p]['health'] > 0]) <= 0:
+            matches[match_id]['ended'] = True
         if matches[match_id]['ended']:
             del matches[match_id]
+            print(f'Game {match_id} has ended')
+        else:
+            print(players)
 
     conn.close()
 
@@ -126,8 +130,8 @@ def initPlayerInfo(new_player_id, info: str):
     except Exception as e:
         print(e)
 
-    usrname = msg_json["username"]
     heath = msg_json["health"]
+    damage = msg_json["damage"]
     ship = msg_json["ship"]
 
     x = random.randint(-19, 19)
@@ -136,9 +140,9 @@ def initPlayerInfo(new_player_id, info: str):
     position = (x, y)
     res = {
         'player_id': new_player_id,
-        'username': usrname,
         'position': position,
         'health': heath,
+        'damage': damage,
         'ship': ship,
     }
 
@@ -171,10 +175,10 @@ def main():
 
         new_player_info = {
             "socket": conn,
-            "username": init_info['username'],
             "position": init_info['position'],
             "direction": 0,
             "health": init_info['health'],
+            "damage": init_info['damage'],
             "ship": init_info['ship'],
             'left': False
         }
@@ -203,10 +207,6 @@ def main():
         }
         conn.send(json.dumps(send_info).encode('utf8'))
 
-        # conn.send(json.dumps(matches[new_match_id]['coins']).encode('utf8'))
-        # conn.send(new_player_id.encode("utf8"))
-        # conn.send(json.dumps(new_player_info['position']).encode('utf8'))
-
         # Tell existing players about new player
         players = matches[new_match_id]['players']
 
@@ -219,9 +219,9 @@ def main():
                     player_conn.sendall(json.dumps({
                         "id": new_player_id,
                         "object": "player",
-                        "username": new_player_info["username"],
                         "position": new_player_info["position"],
                         "health": new_player_info["health"],
+                        "damage": new_player_info["damage"],
                         "ship": new_player_info['ship'],
                         "joined": True,
                         "left": new_player_info['left']
@@ -239,9 +239,9 @@ def main():
                     conn.sendall(json.dumps({
                         "id": player_id,
                         "object": "player",
-                        "username": player_info["username"],
                         "position": player_info["position"],
                         "health": player_info["health"],
+                        "damage": player_info["damage"],
                         "ship": player_info['ship'],
                         "joined": True,
                         "left": False

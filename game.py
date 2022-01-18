@@ -20,7 +20,11 @@ class Game(Entity):
             self.network = Network(
                 socket.gethostname(),
                 8000,
-                {'username': 'manh', 'health': 100, 'ship': character+1}
+                {
+                    'health': character['hp'],
+                    'damage': character['dmg'],
+                    'ship': character['type']
+                }
             )
             self.network.settimeout(5)
 
@@ -45,7 +49,7 @@ class Game(Entity):
         super().__init__(position=(0, 0))
         self.coin = Coin(self.network.coinPosition)
         self.player = Player(self.network.initPosition,
-                             character + 1, self.network, self.coin)
+                             character, self.network, self.coin)
         self.player.id = self.network.id
 
         self.prev_pos = self.player.world_position
@@ -74,7 +78,13 @@ class Game(Entity):
             if time.time() - self.player.reload > 1:
                 self.player.reload = time.time()
                 bullet = CannonBall(
-                    self.player, (self.player.x, self.player.y), mouse.x, mouse.y, 10, self.network)
+                    self.player,
+                    (self.player.x, self.player.y),
+                    mouse.x,
+                    mouse.y,
+                    self.player.damage,
+                    self.network
+                )
                 self.network.send_bullet(bullet)
 
     def protocol(self):
@@ -88,7 +98,8 @@ class Game(Entity):
 
             if not infor:
                 print("Server has stopped! Exiting...")
-                sys.exit()
+                self.game_ended = True
+                return
 
             for info in infor:
 
@@ -97,6 +108,7 @@ class Game(Entity):
 
                     if info["joined"]:
                         new_enemy = Enemy(info)
+                        print(info)
                         self.enemies.append(new_enemy)
                         continue
 
@@ -192,7 +204,7 @@ class Game(Entity):
             if self.background.restrictor:
                 if self.player.x**2 + self.player.y**2 > self.background.restrictor.scale_x**2/4 and time.time() > self.background.restrictor.burn_time:
                     self.background.restrictor.burn_time = time.time() + 1
-                    self.player.health -= 100*.05
+                    self.player.health -= self.player.maxHealth*.05
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:

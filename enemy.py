@@ -4,7 +4,7 @@ import os
 
 class Enemy(Entity):
     def __init__(self, info):
-        self.ship = info['ship']
+        self.ship = info['ship'] + 1
         img_path = os.path.join("Ships", f"ship_{self.ship}_1.png")
         super().__init__(
             position=Vec2(*info['position']),
@@ -14,17 +14,9 @@ class Enemy(Entity):
             scale=Vec3(1, 2, 0)
         )
 
-        self.name_tag = Entity(
-            parent=self,
-            text=info['username'],
-            position=Vec3(0, 1.3, -1),
-            scale=Vec2(5, 3),
-            billboard=True,
-            origin=Vec2(0, 0)
-        )
-
-        self.maxHealth = 100
-        self.health = float(info['health'])
+        self.damage = float(info['damage'])
+        self.maxHealth = float(info['health'])
+        self.health = self.maxHealth
         self.id = info['id']
 
     def update(self):
@@ -33,9 +25,9 @@ class Enemy(Entity):
         try:
             if self.health <= 0:
                 self.texture = os.path.join("Ships", f"ship_{self.ship}_4.png")
-            elif self.health <= 30:
+            elif self.health <= self.maxHealth*.3:
                 self.texture = os.path.join("Ships", f"ship_{self.ship}_3.png")
-            elif self.health <= 70:
+            elif self.health <= self.maxHealth*.7:
                 self.texture = os.path.join("Ships", f"ship_{self.ship}_2.png")
 
         except AttributeError as e:

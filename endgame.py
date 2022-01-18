@@ -15,18 +15,16 @@ class GameOver(Entity):
         def home_back_action():
             from menu import MainMenu
             mm = MainMenu.getInstance()
-            mm.show(mm.bg, mm.main_menu)
+            mm.show(mm.bg, mm.main_menu, mm.input_field)
             game.destroyGame()
             destroy(self)
 
-        Entity(parent=self, model='quad', texture='play_btn.jpg',
-               position=(0.2, -0.3), scale=(0.5, 0.1))
-        Button("Play again", parent=self, position=(0.2, -0.3), scale=(0.24, 0.06), color=rgb(255, 255, 255, 0),
-               text_color=color.black, on_click=play_again_btn_action)
+        # Entity(parent=self, model='quad', texture='play_btn.jpg',
+        #        position=(0, -0.3), scale=(0.5, 0.1))
 
         Entity(parent=self, model='quad', texture='options_btn.jpg',
-               position=(-0.2, -0.3), scale=(0.5, 0.1))
-        Button("Home", parent=self, position=(-0.2, -0.3), scale=(0.24, 0.06), color=rgb(255, 255, 255, 0),
+               position=(0, -0.3), scale=(0.5, 0.1))
+        Button("Home", parent=self, position=(0, -0.3), scale=(0.24, 0.06), color=rgb(255, 255, 255, 0),
                text_color=color.black, on_click=home_back_action)
 
 

@@ -49,7 +49,7 @@ class Network:
         try:
             msg = self.client.recv(self.recv_size)
         except socket.error as e:
-            print('')
+            return
 
         if not msg:
             return None

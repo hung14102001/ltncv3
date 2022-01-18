@@ -1,16 +1,18 @@
 import os
 from ursina import *
 import time
-from sea import CoinPart, Coin, Restrictor
+from sea import CoinPart
 
 
 class Player(Entity):
-    def __init__(self, position, ship, network, coins):
+    def __init__(self, position, info, network, coins):
+
+        self.ship = info['type'] + 1
 
         super().__init__(
             model='quad',
             collider='box',
-            texture=os.path.join("Ships", f"ship_{ship}_1.png"),
+            texture=os.path.join("Ships", f"ship_{self.ship}_1.png"),
             position=position,
             score=0,
             rotation_z=0,
@@ -18,7 +20,6 @@ class Player(Entity):
             scale_x=1,
             scale_y=2,
         )
-        self.ship = ship
         self.id = 0
         self.speed = 0.15
         self.reload = time.time()
@@ -26,7 +27,9 @@ class Player(Entity):
         self.network = network
         self.coins = coins
 
-        self.health = 100
+        self.damage = float(info['dmg'])
+        self.maxHealth = float(info['hp'])
+        self.health = self.maxHealth
         self.death_shown = False
 
     def update(self):
@@ -79,9 +82,9 @@ class Player(Entity):
             camera.y = self.y
             camera.x = self.x
 
-            if self.health <= 30:
+            if self.health <= self.maxHealth*.3:
                 self.texture = os.path.join("Ships", f"ship_{self.ship}_3.png")
-            elif self.health <= 70:
+            elif self.health <= self.maxHealth*.7:
                 self.texture = os.path.join("Ships", f"ship_{self.ship}_2.png")
 
             try:

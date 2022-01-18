@@ -21,7 +21,8 @@ class GameUI (Entity):
             self.minimap.playerRep.y = self.player.y/40
 
         if self.healthBar:
-            self.healthBar.healthbar.scale_x = self.healthBar.healthbar_size.x*self.player.health/100
+            self.healthBar.healthbar.scale_x = self.healthBar.healthbar_size.x * \
+                self.player.health/self.player.maxHealth
             self.text.text = "Score: " + str(self.player.score)
 
     def destroySelf(self):
