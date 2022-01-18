@@ -1,4 +1,4 @@
-import random
+import os
 from ursina import *
 from character import Character
 from options import AudioSwitch
@@ -14,7 +14,7 @@ class MainMenu(Entity):
     w3 = Web3(Web3.WebsocketProvider(
         'wss://ropsten.infura.io/ws/v3/6d3df8badba94fd78e849a7d703fb914'))
 
-    with open("./BattleShipNFT.json") as f:
+    with open(os.path.join("BattleShipNFT.json")) as f:
         info_json = json.load(f)
     abi = info_json["abi"]
 
@@ -40,7 +40,7 @@ class MainMenu(Entity):
         self.user_address = '0'
         self.input_field = InputField(paren=self, y=.1)
         self.bg = Entity(parent=self, model='quad',
-                         texture='./Assets/Image/bg2.png.jpg', position=(0, 0), scale=(2, 1))
+                         texture=os.path.join('Assets', 'Image', 'bg2.png.jpg'), position=(0, 0), scale=(2, 1))
         self.main_menu = Entity(parent=self, enabled=True)
         self.choose_menu = Entity(parent=self, enabled=False)
         self.options_menu = Entity(parent=self, enabled=False)
@@ -49,6 +49,7 @@ class MainMenu(Entity):
         self.a = Audio('start_game', pitch=1, loop=False, autoPlay=True)
 
         self.ships = []
+        self.characters = []
 
         def isSounding(sound):
             if self.a.volume == 1:
@@ -73,7 +74,10 @@ class MainMenu(Entity):
         def play_btn():
             isSounding('mouse_click')
             if self.input_field.text != self.user_address:
+
                 if self.fetchOwnerShips():
+                    for c in self.characters:
+                        destroy(c)
                     if len(self.ships) > 0:
                         for i in range(len(self.ships)):
                             x = (-.6 + .4*i) if i < 3 else (-.8 + .4*(i-2))
@@ -82,14 +86,16 @@ class MainMenu(Entity):
                             id = self.ships[i]['id']
                             type = self.ships[i]['type']
 
-                            Character(
-                                f'ID {id}',
+                            self.characters.append(Character(
+                                f'ID {id}  ',
                                 self.choose_menu,
                                 position,
                                 lst[type],
                                 chooseChar,
                                 param=i
-                            )
+                            ))
+                else:
+                    return
 
             self.hide(self.input_field)
             self.hide(self.bg, self.main_menu)
@@ -98,6 +104,7 @@ class MainMenu(Entity):
         # Reference of our action function for options button
         def options_menu_btn():
             isSounding('mouse_click')
+            self.hide(self.input_field)
             self.hide(self.main_menu)
             self.show(self.options_menu)
 
@@ -131,6 +138,7 @@ class MainMenu(Entity):
 
         def play_back_btn_action():
             isSounding('mouse_click')
+            self.show(self.input_field)
             self.hide(self.choose_menu)
             self.show(self.bg, self.main_menu)
 
@@ -154,6 +162,7 @@ class MainMenu(Entity):
         # Reference of our action function for back button
         def options_back_btn_action():
             isSounding('mouse_click')
+            self.show(self.input_field)
             self.show(self.main_menu)
             self.hide(self.options_menu)
 
@@ -190,6 +199,7 @@ class MainMenu(Entity):
         except:
             return False
         myShips = []
+        self.ships = []
         for i in shipIds:
             ship = MainMenu.myContract.caller.battleShips(i)
             ship = {

@@ -117,8 +117,6 @@ def handle_messages(match_id: str, player_id: int):
         if matches[match_id]['ended']:
             del matches[match_id]
             print(f'Game {match_id} has ended')
-        else:
-            print(players)
 
     conn.close()
 

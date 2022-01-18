@@ -57,6 +57,7 @@ class CannonBall(Entity):
                     self.network.send_health(hitinfo.entity)
                 elif isinstance(hitinfo.entity, CoinPart):
                     destroy(hitinfo.entity)
-                createAnimation(self.x, self.y, './Assets/Effects/explosion')
+                createAnimation(self.x, self.y, os.path.join(
+                    'Assets', 'Effects', 'explosion'))
 
             destroy(self)
