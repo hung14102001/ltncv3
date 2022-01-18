@@ -1,7 +1,6 @@
 from ursina import Entity, Vec3, Vec2
 import os
 
-
 class Enemy(Entity):
     def __init__(self, info):
         self.ship = info['ship'] + 1

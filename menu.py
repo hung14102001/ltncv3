@@ -4,7 +4,7 @@ from character import Character
 from options import AudioSwitch
 from ursina import printvar
 from game import Game
-
+from loading import LoadingWheel
 
 class MainMenu(Entity):
     import json
@@ -36,16 +36,15 @@ class MainMenu(Entity):
             MainMenu.__instance = self
 
         # Create empty entities that will be parents of our menus content
-        #self.title = Entity(parent=self,model='quad',texture='welcome2.jpg',position=(0,0.2),scale=1)
         self.user_address = '0'
-        self.input_field = InputField(paren=self, y=.1)
-        self.bg = Entity(parent=self, model='quad',
-                         texture=os.path.join('Assets', 'Image', 'bg2.png.jpg'), position=(0, 0), scale=(2, 1))
         self.main_menu = Entity(parent=self, enabled=True)
+        self.input_field = InputField(paren=self.main_menu, y=.1)
+        self.bg = Entity(parent=self.main_menu, model='quad',texture='bg2.jpg',position=(0,0),scale=(2,1))
+        self.title = Entity(parent=self.main_menu,model='quad',texture='title3.png',position=(0,0.3),scale=(0.8,0.5)) 
         self.choose_menu = Entity(parent=self, enabled=False)
         self.options_menu = Entity(parent=self, enabled=False)
 
-        # self.loading_screen = LoadingWheel(enabled=False)
+        self.loading = LoadingWheel(enabled=False)
         self.a = Audio('start_game', pitch=1, loop=False, autoPlay=True)
 
         self.ships = []
@@ -58,16 +57,17 @@ class MainMenu(Entity):
                 self.b.pause()
 
         # [MAIN MENU] WINDOWN START
+        def loadgame():
+            self.hide(self.loading)
 
         def chooseChar(offset):
-
-            Game(self.ships[offset])
-
-            self.hide(self.choose_menu)
             isSounding('mouse_click')
+            self.hide(self.choose_menu)
+            # self.show(self.loading)
+            # invoke(loadgame, delay=2)
+            Game(self.ships[offset],self.a)
 
-        lst = ['ship_1.png', "ship_2_1.png", "ship_3_1.png",
-               "ship_4_1.png", "ship_5_1.png", "ship_6_1.png"]
+        lst = ['ship_1.png', "ship_2_1.png", "ship_3_1.png", "ship_4_1.png", "ship_5_1.png", "ship_6_1.png"]
 
         # Reference of our action function for play button
 
@@ -98,7 +98,7 @@ class MainMenu(Entity):
                     return
 
             self.hide(self.input_field)
-            self.hide(self.bg, self.main_menu)
+            self.hide(self.main_menu)
             self.show(self.choose_menu)
 
         # Reference of our action function for options button
@@ -140,7 +140,7 @@ class MainMenu(Entity):
             isSounding('mouse_click')
             self.show(self.input_field)
             self.hide(self.choose_menu)
-            self.show(self.bg, self.main_menu)
+            self.show(self.main_menu)
 
         Entity(parent=self.choose_menu, model='quad',
                texture='back_btn.jpg', position=(-0.76, 0.44), scale=(0.5, 0.3))

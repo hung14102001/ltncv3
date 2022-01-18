@@ -4,6 +4,8 @@ from enemy import Enemy
 from ursina import Entity, destroy
 from sea import CoinPart
 from helper import createAnimation
+from ursina import printvar
+
 
 
 class CannonBall(Entity):
@@ -57,7 +59,16 @@ class CannonBall(Entity):
                     self.network.send_health(hitinfo.entity)
                 elif isinstance(hitinfo.entity, CoinPart):
                     destroy(hitinfo.entity)
+
+                    from menu import MainMenu
+                    mm = MainMenu()
+                    if mm.a.volume == 1:
+                        Audio('stuff_explosion', pitch=1, loop=False, autoPlay=True)
+                        
+                    else:
+                        Audio('stuff_explosion',volume = 0)
                 createAnimation(self.x, self.y, os.path.join(
                     'Assets', 'Effects', 'explosion'))
 
             destroy(self)
+

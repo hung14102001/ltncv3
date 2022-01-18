@@ -180,6 +180,6 @@ class MiniMap(Entity):
             parent=self,
             scale=(.1, .1),
             model='quad',
-            position=(0, 0, -0.1),
+            position=(0, 0, 0),
             color=green
         )

@@ -8,12 +8,12 @@ from gameUI import GameUI
 from cannonball import CannonBall
 from player import Player
 from sea import Sea, Plant, Coin
-from endgame import GameOver
+from gameover import GameOver
 from enemy import Enemy
 
 
 class Game(Entity):
-    def __init__(self, character) -> None:
+    def __init__(self, character, sound) -> None:
         can_continue = True
 
         while can_continue:
@@ -47,16 +47,16 @@ class Game(Entity):
                 self.network.settimeout(None)
 
         super().__init__(position=(0, 0))
+        self.a = sound
         self.coin = Coin(self.network.coinPosition)
         self.player = Player(self.network.initPosition,
-                             character, self.network, self.coin)
+                             character, self.network, self.coin, self.a)
         self.player.id = self.network.id
 
         self.prev_pos = self.player.world_position
         self.prev_dir = self.player.world_rotation_z
 
         self.background = Sea(self.network.restrictor)
-
         self.plants = Plant()
         self.ui = GameUI(self.player, self.background.restrictor)
         camera.z = -30
@@ -74,8 +74,11 @@ class Game(Entity):
         # move left if hold arrow left
 
         if mouse.left and self.player.health > 0:
-            # Audio('audios/shot.wav').play()
             if time.time() - self.player.reload > 1:
+                if self.a.volume == 1:
+                    Audio('shot',loop=False, autoPlay=True)
+                else:
+                    Audio('shot',volume=0)
                 self.player.reload = time.time()
                 bullet = CannonBall(
                     self.player,
@@ -184,7 +187,7 @@ class Game(Entity):
 
                 elif info['object'] == 'end_game':
                     if not self.player.death_shown:
-                        GameOver(self)
+                        GameOver(self,self.a)
                         self.player.death_shown = True
                         self.scores.append(('player', self.player.score))
 
@@ -208,7 +211,7 @@ class Game(Entity):
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:
-            GameOver(self)
+            GameOver(self,self.a)
             self.network.send_player(self.player)
             self.network.send_score(self.player)
             self.player.death_shown = True

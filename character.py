@@ -13,8 +13,7 @@ class Character(Button):
             scale_x=.1,
             text_origin=(0.4, -1),
             icon=icon,
-            color=rgb(255, 255, 255, 0),
-            on_click=submit
+            color=rgb(255, 255, 255, 0)
         )
         Entity(parent=self, model='quad', texture='next_btn.png',
                position=(0, -0.9), scale=(2.3, 2))
