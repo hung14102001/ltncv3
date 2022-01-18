@@ -1,11 +1,9 @@
 import os
 import math
 from enemy import Enemy
-from ursina import Entity, destroy
+from ursina import *
 from sea import CoinPart
 from helper import createAnimation
-from ursina import printvar
-
 
 
 class CannonBall(Entity):
@@ -60,13 +58,13 @@ class CannonBall(Entity):
                 elif isinstance(hitinfo.entity, CoinPart):
                     destroy(hitinfo.entity)
 
-                    from menu import MainMenu
-                    mm = MainMenu()
-                    if mm.a.volume == 1:
-                        Audio('stuff_explosion', pitch=1, loop=False, autoPlay=True)
-                        
-                    else:
-                        Audio('stuff_explosion',volume = 0)
+                from menu import MainMenu
+                mm = MainMenu.getInstance()
+                if mm.a.volume == 1:
+                    Audio('stuff_explosion', loop=False, autoPlay=True)
+                    
+                else:
+                    Audio('stuff_explosion',volume = 0)
                 createAnimation(self.x, self.y, os.path.join(
                     'Assets', 'Effects', 'explosion'))
 
