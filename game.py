@@ -58,7 +58,7 @@ class Game(Entity):
         self.background = Sea(self.network.restrictor)
 
         self.plants = Plant()
-        self.ui = GameUI(self.player)
+        self.ui = GameUI(self.player, self.background.restrictor)
         camera.z = -30
 
         self.enemies = []
