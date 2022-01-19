@@ -53,7 +53,7 @@ class MainMenu(Entity):
                 'type': ship,
             }
 
-            Game(char)
+            Game(char, self.a)
 
             self.hide(self.choose_menu)
             isSounding('mouse_click')

@@ -67,9 +67,11 @@ def handle_messages(match_id: str, player_id: int):
             players[player_id]["health"] = msg_json["health"]
 
         if msg_json['object'] == 'score':
-            if len([0 for p in players if players[p]['health'] > 0]) <= 0:
+            alives = len([0 for p in players if players[p]['health'] > 0])
+            if (len(players) > 1 and alives < 2) or alives < 1:
                 print(f'Game {match_id} has ended')
                 matches[match_id]['ended'] = True
+
 
         if msg_json['object'] == 'coin_update':
             index = msg_json['coin_id']

@@ -5,7 +5,7 @@ from sea import CoinPart
 
 
 class Player(Entity):
-    def __init__(self, position, info, network, coins):
+    def __init__(self, position, info, network, coins, sound):
 
         self.ship = info['type'] + 1
 
@@ -26,6 +26,7 @@ class Player(Entity):
         self.level = 1
         self.network = network
         self.coins = coins
+        self.a = sound
 
         self.damage = float(info['dmg'])
         self.maxHealth = float(info['hp'])
@@ -95,6 +96,7 @@ class Player(Entity):
                 hitinfo = self.intersects()
                 if hitinfo.hit:
                     if isinstance(hitinfo.entity, CoinPart):
+                        self.isSounding('pick_item')
                         if not self.death_shown:
                             self.score += 1
                         index = hitinfo.entity.index
@@ -115,3 +117,9 @@ class Player(Entity):
 
             self.x = self.x + increaseX - decreaseX
             self.y = self.y + increaseY - decreaseY
+
+    def isSounding(self, k):
+        if self.a.volume == 1:
+            Audio(k, pitch=1, loop=False, autoplay=True)
+        else:
+            Audio(k, pitch=1, volume=0)

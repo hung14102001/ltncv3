@@ -13,7 +13,7 @@ from enemy import Enemy
 
 
 class Game(Entity):
-    def __init__(self, character) -> None:
+    def __init__(self, character, sound) -> None:
         can_continue = True
 
         while can_continue:
@@ -47,9 +47,10 @@ class Game(Entity):
                 self.network.settimeout(None)
 
         super().__init__(position=(0, 0))
+        self.a = sound
         self.coin = Coin(self.network.coinPosition)
         self.player = Player(self.network.initPosition,
-                             character, self.network, self.coin)
+                             character, self.network, self.coin, self.a)
         self.player.id = self.network.id
 
         self.prev_pos = self.player.world_position
@@ -76,6 +77,10 @@ class Game(Entity):
         if mouse.left and self.player.health > 0:
             # Audio('audios/shot.wav').play()
             if time.time() - self.player.reload > 1:
+                if self.a.volume == 1:
+                    Audio('shot', loop=False, autoPlay=True)
+                else:
+                    Audio('shot', volume=0)
                 self.player.reload = time.time()
                 bullet = CannonBall(
                     self.player,
