@@ -189,7 +189,7 @@ class Game(Entity):
 
                 elif info['object'] == 'end_game':
                     if not self.player.death_shown:
-                        GameOver(self)
+                        GameOver(self, self.a)
                         self.player.death_shown = True
                         self.scores.append(('player', self.player.score))
 
@@ -213,7 +213,7 @@ class Game(Entity):
                     self.network.send_health(self.player)
 
         elif not self.player.death_shown:
-            GameOver(self)
+            GameOver(self, self.a)
             self.network.send_player(self.player)
             self.network.send_score(self.player)
             self.player.death_shown = True

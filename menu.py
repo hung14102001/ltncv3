@@ -2,7 +2,6 @@ import os
 from ursina import *
 from character import Character
 from options import AudioSwitch
-from ursina import printvar
 from game import Game
 
 
@@ -25,11 +24,10 @@ class MainMenu(Entity):
             MainMenu.__instance = self
 
         # Create empty entities that will be parents of our menus content
-        #self.title = Entity(parent=self,model='quad',texture='welcome2.jpg',position=(0,0.2),scale=1)
         self.user_address = '0'
-        self.bg = Entity(parent=self, model='quad',
-                         texture=os.path.join('Assets', 'Image', 'bg2.png.jpg'), position=(0, 0), scale=(2, 1))
         self.main_menu = Entity(parent=self, enabled=True)
+        self.bg = Entity(parent=self.main_menu, model='quad',texture='bg2.jpg',position=(0,0),scale=(2,1))
+        self.title = Entity(parent=self.main_menu,model='quad',texture='title3.png',position=(0,0.3),scale=(0.8,0.5)) 
         self.choose_menu = Entity(parent=self, enabled=False)
         self.options_menu = Entity(parent=self, enabled=False)
 
@@ -45,8 +43,8 @@ class MainMenu(Entity):
                 self.b.pause()
 
         # [MAIN MENU] WINDOWN START
-
         def chooseChar(ship):
+            isSounding('mouse_click')
             char = {
                 'hp': 100,
                 'dmg': 15,
@@ -56,7 +54,6 @@ class MainMenu(Entity):
             Game(char, self.a)
 
             self.hide(self.choose_menu)
-            isSounding('mouse_click')
 
         lst = ['ship_1.png', "ship_2_1.png", "ship_3_1.png",
                "ship_4_1.png", "ship_5_1.png", "ship_6_1.png"]
@@ -78,7 +75,7 @@ class MainMenu(Entity):
 
         def play_btn():
             isSounding('mouse_click')
-            self.hide(self.bg, self.main_menu)
+            self.hide(self.main_menu)
             self.show(self.choose_menu)
 
         # Reference of our action function for options button
@@ -118,7 +115,7 @@ class MainMenu(Entity):
         def play_back_btn_action():
             isSounding('mouse_click')
             self.hide(self.choose_menu)
-            self.show(self.bg, self.main_menu)
+            self.show(self.main_menu)
 
         Entity(parent=self.choose_menu, model='quad',
                texture='back_btn.jpg', position=(-0.76, 0.44), scale=(0.5, 0.3))

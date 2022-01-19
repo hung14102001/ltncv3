@@ -1,33 +1,37 @@
 from ursina import *
 
-
 class GameOver(Entity):
-    def __init__(self, game):
+    def __init__(self, game, sound):
         super().__init__(parent=camera.ui)
-        self.bg = Entity(parent=self, model='quad', texture='game_over_bg.jpg', position=(
-            0, 0.02, 0), scale=(1, 0.6, 0))
+        self.color_bg = Entity(parent=self,model='quad',color=color._32,position=(0,0),scale=(2,1))
+        self.bg = Entity(parent=self, model='quad', texture='game_over_bg.jpg',
+                         position=(0, 0.02, 0), scale=(1, 0.6, 0))
         self.mess = Entity(parent=self, model='quad',
                            texture='game_over.png', position=(0, 0, 0), scale=1)
 
-        def play_again_btn_action():
-            self.disable()
+        self.a = Audio('game_over',loop=False,autoPlay=True)
+        if sound.volume == 1:
+            self.a.play()
+        else:
+            self.a.pause()
 
         def home_back_action():
             from menu import MainMenu
             mm = MainMenu.getInstance()
-            mm.show(mm.bg, mm.main_menu)
+            mm.show(mm.main_menu)
+
+            if mm.a.volume == 1:
+                Audio('mouse_click',loop=False, autoPlay=True)
+            else:
+                Audio('mouse_click',volume=0)
             game.destroyGame()
             destroy(self)
 
-        # Entity(parent=self, model='quad', texture='play_btn.jpg',
-        #        position=(0, -0.3), scale=(0.5, 0.1))
+        Entity(parent=self,model='quad',texture='next_btn.png',position=(0,-0.3),scale=(0.3,0.3))
+        Button("Home", parent=self,position=(0,-0.29), scale=(0.24, 0.06), color=rgb(255,255,255,0),
+                text_color=color.black,on_click=home_back_action)
 
-        Entity(parent=self, model='quad', texture='options_btn.jpg',
-               position=(0, -0.3), scale=(0.5, 0.1))
-        Button("Home", parent=self, position=(0, -0.3), scale=(0.24, 0.06), color=rgb(255, 255, 255, 0),
-               text_color=color.black, on_click=home_back_action)
-
-
+'''
 class Completed(Entity):
     def __init__(self, sound):
         super().__init__(
@@ -59,3 +63,4 @@ class Completed(Entity):
                position=(-0.2, -0.3), scale=(0.5, 0.1))
         Button("Home", parent=self, position=(-0.2, -0.3), scale=(0.24, 0.06), color=rgb(255, 255, 255, 0),
                text_color=color.black, on_click=play_again_btn_action)
+'''
